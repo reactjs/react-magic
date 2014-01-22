@@ -31,7 +31,7 @@ To use React-Magic, add a `<script>` tag to the bottom of your page, right above
 the `</body>`:
 
 ```html
-<script src="http://daniel15.github.io/react-magic/magic-loader.js"></script>
+<script src="http://reactjs.github.io/react-magic/magic-loader.js"></script>
 ```
 
 This handles loading all the required scripts. Alternatively, you can put all 
@@ -41,7 +41,7 @@ the required scripts instead:
 <script src="http://facebook.github.io/react/js/react.min.js"></script> 
 <script src="http://facebook.github.io/react/js/JSXTransformer.js"></script>
 <script src="http://facebook.github.io/react/js/html-jsx-lib.js"></script>
-<script src="http://daniel15.github.io/react-magic/magic.js"></script>
+<script src="http://reactjs.github.io/react-magic/magic.js"></script>
 ```
 
 The end result is the same.
@@ -50,7 +50,7 @@ A fun party trick is adding a bookmarklet to your browser which can be used to
 Reactify *any* plain HTML site. Click it and mystify your friends:
 
 ```javascript
-javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.createElement("script");a.src=e;a.onload=c;b.body.appendChild(a)}}var d=["http://facebook.github.io/react/js/react.min.js","http://facebook.github.io/react/js/JSXTransformer.js","http://facebook.github.io/react/js/html-jsx-lib.js","http://daniel15.github.io/react-magic/magic.js"];c();return!1})(document);
+javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.createElement("script");a.src=e;a.onload=c;b.body.appendChild(a)}}var d=["http://facebook.github.io/react/js/react.min.js","http://facebook.github.io/react/js/JSXTransformer.js","http://facebook.github.io/react/js/html-jsx-lib.js","http://reactjs.github.io/react-magic/magic.js"];c();return!1})(document);
 ```
 
 This just loads the same scripts as referenced above.
