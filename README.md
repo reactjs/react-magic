@@ -1,31 +1,28 @@
 React-Magic
 ===========
 
-React-Magic is an experimental library that uses the power of Facebook's awesome 
+React-Magic is an experimental library that uses the power of Facebook's  
 [React](http://facebook.github.io/react/) library to inject AJAX-loading 
 goodness into plain old HTML webpages, without having to write any custom 
 JavaScript. You can even use CSS transitions between the pages. Simply add a 
-single script tag (or click a bookmarklet) and it "just works". 
+single script tag (or click a bookmarklet) and "it just works". 
 
-It's magic!
-
-But how?!
-=========
+Under the covers
+================
 
 React-Magic intercepts all navigation (link clicks and form posts) and loads 
 the requested page via an AJAX request. React is then used to "diff" the old
 HTML with the new HTML, and only update the parts of the DOM that have been 
 changed.
 
-No way!
-=======
-Yes way. Take a look at the 
-[page transitions](http://stuff.dan.cx/facebook/react-hacks/magic/red.php) and 
-[form submission](http://stuff.dan.cx/facebook/react-hacks/magic/feedback1.htm)
-demos.
+Demos
+=====
 
-OMG I WANT IT
-=============
+* [page transitions](http://stuff.dan.cx/facebook/react-hacks/magic/red.php)
+* [form submission](http://stuff.dan.cx/facebook/react-hacks/magic/feedback1.htm)
+
+Usage
+=====
 
 To use React-Magic, add a `<script>` tag to the bottom of your page, right above
 the `</body>`:
@@ -57,7 +54,7 @@ This just loads the same scripts as referenced above.
 
 Caveat Emptor
 =============
-Even magic comes with its limitations. Since this is experimental, it may not 
+Even magic comes with its limitations. Since this project is experimental, it may not 
 work properly in all browsers. If you're looking for something that works in 
 IE6, you've come to the wrong place.
 
