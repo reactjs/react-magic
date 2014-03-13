@@ -65,6 +65,7 @@
     } catch (ex) {
       throw new Error('Something bad happened when transforming HTML to JSX: ' + ex);
       console.log(jsx);
+      window.location.reload()
     }
   }
 
