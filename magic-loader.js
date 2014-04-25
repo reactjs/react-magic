@@ -15,7 +15,7 @@ javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.create
 
 (function(document) {
   var scripts = [
-    'http://facebook.github.io/react/js/react.min.js', 
+    'http://fb.me/react-0.10.0.min.js', 
     'http://facebook.github.io/react/js/JSXTransformer.js',
     'http://facebook.github.io/react/js/html-jsx-lib.js',
     'http://reactjs.github.io/react-magic/magic.js'
