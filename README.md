@@ -18,8 +18,8 @@ changed.
 Demos
 =====
 
-* [page transitions](http://stuff.dan.cx/facebook/react-hacks/magic/red.php)
-* [form submission](http://stuff.dan.cx/facebook/react-hacks/magic/feedback1.htm)
+* [Page transitions](http://stuff.dan.cx/facebook/react-hacks/magic/red.php)
+* [Form submission](http://stuff.dan.cx/facebook/react-hacks/magic/feedback1.htm)
 
 Usage
 =====
@@ -35,7 +35,7 @@ This handles loading all the required scripts. Alternatively, you can put all
 the required scripts instead:
 
 ```html
-<script src="http://facebook.github.io/react/js/react.min.js"></script> 
+<script src="http://fb.me/react-0.10.0.min.js"></script> 
 <script src="http://facebook.github.io/react/js/JSXTransformer.js"></script>
 <script src="http://facebook.github.io/react/js/html-jsx-lib.js"></script>
 <script src="http://reactjs.github.io/react-magic/magic.js"></script>
