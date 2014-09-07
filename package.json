@@ -3,12 +3,15 @@
   "version": "0.2.0-dev",
   "description": "Converts HTML to JSX for use with React",
   "main": "cli.js",
+  "dependencies": {
+  },
   "devDependencies": {
     "gulp": "~3.8.7",
     "webpack": "~1.4.0-beta3",
     "gulp-webpack": "~0.3.0",
     "gulp-rename": "~1.2.0",
-    "gulp-uglify": "~1.0.1"
+    "gulp-uglify": "~1.0.1",
+    "gulp-gh-pages": "~0.3.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

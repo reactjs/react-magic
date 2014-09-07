@@ -8,6 +8,7 @@
  *
  */
 
+var githubPages = require('gulp-gh-pages');
 var gulp = require('gulp');
 var gulpWebpack = require('gulp-webpack');
 var rename = require('gulp-rename');
@@ -50,4 +51,9 @@ gulp.task('build-magic', function() {
 gulp.task('build-site-misc', function() {
   return gulp.src('site/*')
     .pipe(gulp.dest(SITE_OUTPUT_DIR));
+});
+
+gulp.task('deploy', ['build'], function() {
+  return gulp.src('build/site/**/*')
+    .pipe(githubPages({}));
 });
