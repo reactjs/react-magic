@@ -12,8 +12,7 @@
   var scripts = [
     'http://fb.me/react-0.10.0.min.js',
     'http://facebook.github.io/react/js/JSXTransformer.js',
-    'http://facebook.github.io/react/js/html-jsx-lib.js',
-    'http://reactjs.github.io/react-magic/magic.js'
+    'http://reactjs.github.io/react-magic/magic.min.js'
   ];
 
   // Sometimes Chrome was loading the scripts in the wrong order (lolwat)

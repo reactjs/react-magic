@@ -40,8 +40,7 @@ the required scripts instead:
 ```html
 <script src="http://fb.me/react-0.10.0.min.js"></script>
 <script src="http://facebook.github.io/react/js/JSXTransformer.js"></script>
-<script src="http://facebook.github.io/react/js/html-jsx-lib.js"></script>
-<script src="http://reactjs.github.io/react-magic/magic.js"></script>
+<script src="http://reactjs.github.io/react-magic/magic.min.js"></script>
 ```
 
 The end result is the same.
@@ -50,7 +49,7 @@ A fun party trick is adding a bookmarklet to your browser which can be used to
 Reactify *any* plain HTML site. Click it and mystify your friends:
 
 ```javascript
-javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.createElement("script");a.src=e;a.onload=c;b.body.appendChild(a)}}var d=["http://fb.me/react-0.10.0.min.js","http://facebook.github.io/react/js/JSXTransformer.js","http://facebook.github.io/react/js/html-jsx-lib.js","http://reactjs.github.io/react-magic/magic.js"];c();return!1})(document);
+javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.createElement("script");a.src=e;a.onload=c;b.body.appendChild(a)}}var d=["http://fb.me/react-0.10.0.min.js","http://facebook.github.io/react/js/JSXTransformer.js","http://reactjs.github.io/react-magic/magic.min.js"];c();return!1})(document);
 ```
 
 This just loads the same scripts as referenced above.
