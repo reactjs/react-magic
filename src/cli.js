@@ -9,7 +9,7 @@ function getArgs() {
   var args = yargs
     .usage(
       'Converts HTML to JSX for use with React.\n' +
-      'Usage: $0 [-c ComponentName] [-i 2] [file.htm]'
+      'Usage: $0 [-c ComponentName] file.htm'
     )
     .describe('className', 'Create a React component (wraps JSX in React.createClass call)')
     .alias('className', 'c')

@@ -8,17 +8,22 @@
  *
  */
 
+var del = require('del');
 var githubPages = require('gulp-gh-pages');
 var gulp = require('gulp');
 var gulpWebpack = require('gulp-webpack');
+var merge = require('merge-stream');
 var rename = require('gulp-rename');
 var webpack = require('webpack');
 var uglify = require('gulp-uglify');
 
 var SITE_OUTPUT_DIR = 'build/site/';
+var PACKAGE_OUTPUT_DIR = 'build/package/';
 
 gulp.task('default', ['build']);
-gulp.task('build', ['build-htmltojsx', 'build-magic', 'build-site-misc']);
+gulp.task('build', [
+  'build-htmltojsx', 'build-magic', 'build-site-misc', 'build-package'
+]);
 
 gulp.task('build-htmltojsx', function() {
   return gulp.src('src/htmltojsx.js')
@@ -65,7 +70,26 @@ gulp.task('build-site-misc', function() {
     .pipe(gulp.dest(SITE_OUTPUT_DIR));
 });
 
-gulp.task('deploy', ['build'], function() {
+gulp.task('build-package', function() {
+  var main = gulp
+    .src([
+      '**/*', '!README*.md', '!node_modules{,/**}', '!build{,/**}',
+      '!site{,/**}', '!temp{,/**}',
+    ])
+    .pipe(gulp.dest(PACKAGE_OUTPUT_DIR));
+
+  var readme = gulp.src('README-htmltojsx.md')
+    .pipe(rename('README.md'))
+    .pipe(gulp.dest(PACKAGE_OUTPUT_DIR));
+
+  return merge(main, readme);
+});
+
+gulp.task('deploy-site', ['build'], function() {
   return gulp.src('build/site/**/*')
     .pipe(githubPages({}));
+});
+
+gulp.task('clean', function(callback) {
+  del(['build'], callback);
 });
