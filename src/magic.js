@@ -1,9 +1,9 @@
-/**!
+/** @preserve
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -19,7 +19,7 @@
    *
    * @param {String} url        URL to load
    * @param {Object} rawData    Object containing data to send in request. If
-   *                            specified, a post is done. Otherwise, a get is 
+   *                            specified, a post is done. Otherwise, a get is
    *                            done.
    * @param {Function} callback Function to call once request returns
    */
@@ -71,8 +71,8 @@
 
   /**
    * Renders the specified HTML to the body, by converting it to a React
-   * component then rendering the component. Rather than blowing away and 
-   * overwriting the body, React will handle state transition from the existing 
+   * component then rendering the component. Rather than blowing away and
+   * overwriting the body, React will handle state transition from the existing
    * state to the new state.
    *
    * @param {String} html HTML to render
@@ -83,7 +83,7 @@
   }
 
   /**
-   * Handles a click event on the body. Uses pushState to change the current 
+   * Handles a click event on the body. Uses pushState to change the current
    * page state, and trigger the AJAX load of the next page.
    *
    * @param {MouseEvent} event
@@ -135,10 +135,10 @@
    * @param {XMLHttpRequest} xhr
    */
   function loadComplete(content, xhr) {
-    // Force a full page load if it's not a compatible content type or a 
+    // Force a full page load if it's not a compatible content type or a
     // non-2xx status code
     var contentType = xhr.getResponseHeader('Content-Type').split(';')[0];
-    var shouldDoFullLoad = 
+    var shouldDoFullLoad =
       ALLOWED_CONTENT_TYPES.indexOf(contentType) === -1 ||
       xhr.status < 200 ||
       xhr.status > 299;
@@ -202,7 +202,7 @@
     });
     var initialHTML = document.body.innerHTML;
 
-    // Re-render existing content using React, so state transitions work 
+    // Re-render existing content using React, so state transitions work
     // correctly.
     render(initialHTML);
     // Temporary hack

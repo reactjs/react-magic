@@ -1,21 +1,16 @@
-/**!
+/** @preserve
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/*
-// Minified
-javascript:(function(b){function c(){if(0!==d.length){var e=d.shift(),a=b.createElement("script");a.src=e;a.onload=c;b.body.appendChild(a)}}var d=["http://fb.me/react-0.10.0.min.js","http://facebook.github.io/react/js/JSXTransformer.js","http://facebook.github.io/react/js/html-jsx-lib.js","http://reactjs.github.io/react-magic/magic.js"];c();return!1})(document);
-*/
-
 (function(document) {
   var scripts = [
-    'http://fb.me/react-0.10.0.min.js', 
+    'http://fb.me/react-0.10.0.min.js',
     'http://facebook.github.io/react/js/JSXTransformer.js',
     'http://facebook.github.io/react/js/html-jsx-lib.js',
     'http://reactjs.github.io/react-magic/magic.js'
