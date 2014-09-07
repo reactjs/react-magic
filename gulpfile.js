@@ -14,6 +14,7 @@ var gulp = require('gulp');
 var gulpWebpack = require('gulp-webpack');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
+var spawn = require('child_process').spawn;
 var webpack = require('webpack');
 var uglify = require('gulp-uglify');
 
@@ -85,9 +86,17 @@ gulp.task('build-package', function() {
   return merge(main, readme);
 });
 
-gulp.task('deploy-site', ['build'], function() {
+gulp.task('publish-site', ['build'], function() {
   return gulp.src('build/site/**/*')
     .pipe(githubPages({}));
+});
+
+gulp.task('publish-package', ['build'], function(callback) {
+  spawn(
+    'npm',
+    ['publish', PACKAGE_OUTPUT_DIR],
+    { stdio: 'inherit' }
+  ).on('close', callback);
 });
 
 gulp.task('clean', function(callback) {
