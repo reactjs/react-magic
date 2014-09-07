@@ -41,7 +41,19 @@ gulp.task('build-htmltojsx', function() {
 });
 
 gulp.task('build-magic', function() {
-  return gulp.src('src/magic*.js')
+  return gulp.src('src/magic.js')
+    .pipe(gulpWebpack({
+      output: {
+        library: 'ReactMagic',
+        libraryTarget: 'umd',
+        filename: 'magic.js',
+      },
+      plugins: [
+        new webpack.DefinePlugin({
+          IN_BROWSER: true,
+        }),
+      ],
+    }))
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))

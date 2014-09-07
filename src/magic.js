@@ -10,6 +10,8 @@
 ;(function() {
   'use strict';
 
+  var HTMLtoJSX = require('./htmltojsx');
+
   var converter;
 
   var ALLOWED_CONTENT_TYPES = ['text/html', 'text/plain'];
