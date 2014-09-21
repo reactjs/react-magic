@@ -473,7 +473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    html = html.trim();
 	    // Ugly method to strip script tags. They can wreak havoc on the DOM nodes
 	    // so let's not even put them in the DOM.
-	    html = html.replace(/<script(.*?)<\/script>/g, '');
+	    html = html.replace(/<script([\s\S]*?)<\/script>/g, '');
 	    return html;
 	  },
 
