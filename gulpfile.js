@@ -12,6 +12,7 @@ var del = require('del');
 var githubPages = require('gulp-gh-pages');
 var gulp = require('gulp');
 var gulpWebpack = require('gulp-webpack');
+var livereload = require('gulp-livereload');
 var merge = require('merge-stream');
 var rename = require('gulp-rename');
 var spawn = require('child_process').spawn;
@@ -43,7 +44,8 @@ gulp.task('build-htmltojsx', function() {
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
-    .pipe(gulp.dest(SITE_OUTPUT_DIR));
+    .pipe(gulp.dest(SITE_OUTPUT_DIR))
+    .pipe(livereload({ auto: false }));
 });
 
 gulp.task('build-magic', function() {
@@ -63,12 +65,14 @@ gulp.task('build-magic', function() {
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
-    .pipe(gulp.dest(SITE_OUTPUT_DIR));
+    .pipe(gulp.dest(SITE_OUTPUT_DIR))
+    .pipe(livereload({ auto: false }));
 });
 
 gulp.task('build-site-misc', function() {
-  return gulp.src('site/*')
-    .pipe(gulp.dest(SITE_OUTPUT_DIR));
+  return gulp.src(['site/*', 'test/*'])
+    .pipe(gulp.dest(SITE_OUTPUT_DIR))
+    .pipe(livereload({ auto: false }));
 });
 
 gulp.task('build-package', function() {
@@ -101,4 +105,10 @@ gulp.task('publish-package', ['build'], function(callback) {
 
 gulp.task('clean', function(callback) {
   del(['build'], callback);
+});
+
+gulp.task('watch', function() {
+  livereload.listen();
+  gulp.watch(['site/*', 'test/*'], ['build-site-misc']);
+  gulp.watch('src/htmltojsx.js', ['build-htmltojsx']);
 });
