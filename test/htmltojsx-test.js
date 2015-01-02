@@ -88,6 +88,12 @@ describe('htmltojsx', function() {
         .toBe('<div style={{color: \'red\'}}>Test</div>');
     });
 
+    it('should convert CSS shorthand "style" values', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="padding: 10px 15px 20px 25px;">Test</div>').trim())
+        .toBe('<div style={{padding: \'10px 15px 20px 25px\'}}>Test</div>');
+    });
+
     it('should convert numeric "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="width: 100px">Test</div>').trim())

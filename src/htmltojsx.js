@@ -94,6 +94,10 @@ function isEmpty(string) {
    return !/[^\s]/.test(string);
 }
 
+function containsSpaces(value) {
+  return /\s/.test(value);
+}
+
 /**
  * Determines if the specified string consists entirely of numeric characters.
  */
@@ -468,7 +472,7 @@ StyleParser.prototype = {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
-    } else if (endsWith(value, 'px')) {
+    } else if (endsWith(value, 'px') && !containsSpaces(value)) {
       // "500px" -> 500
       return trimEnd(value, 'px');
     } else {
