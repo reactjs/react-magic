@@ -94,8 +94,15 @@ function isEmpty(string) {
    return !/[^\s]/.test(string);
 }
 
-function containsSpaces(value) {
-  return /\s/.test(value);
+/**
+ * Determines if the CSS value can be converted from a
+ * 'px' suffixed string to a numeric value
+ *
+ * @param {string} value CSS property value
+ * @return {boolean}
+ */
+function isConvertiblePixelValue(value) {
+  return /^\d+px$/.test(value);
 }
 
 /**
@@ -472,11 +479,11 @@ StyleParser.prototype = {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
-    } else if (endsWith(value, 'px') && !containsSpaces(value)) {
+    } else if (isConvertiblePixelValue(value)) {
       // "500px" -> 500
       return trimEnd(value, 'px');
     } else {
-      // Proably a string, wrap it in quotes
+      // Probably a string, wrap it in quotes
       return '\'' + value.replace(/'/g, '"') + '\'';
     }
   }
