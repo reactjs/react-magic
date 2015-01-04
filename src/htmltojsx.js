@@ -95,6 +95,17 @@ function isEmpty(string) {
 }
 
 /**
+ * Determines if the CSS value can be converted from a
+ * 'px' suffixed string to a numeric value
+ *
+ * @param {string} value CSS property value
+ * @return {boolean}
+ */
+function isConvertiblePixelValue(value) {
+  return /^\d+px$/.test(value);
+}
+
+/**
  * Determines if the specified string consists entirely of numeric characters.
  */
 function isNumeric(input) {
@@ -468,11 +479,11 @@ StyleParser.prototype = {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
-    } else if (endsWith(value, 'px')) {
+    } else if (isConvertiblePixelValue(value)) {
       // "500px" -> 500
       return trimEnd(value, 'px');
     } else {
-      // Proably a string, wrap it in quotes
+      // Probably a string, wrap it in quotes
       return '\'' + value.replace(/'/g, '"') + '\'';
     }
   }
