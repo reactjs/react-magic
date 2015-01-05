@@ -117,5 +117,11 @@ describe('htmltojsx', function() {
       expect(converter.convert('<label for="potato">Test</label>').trim())
         .toBe('<label htmlFor="potato">Test</label>');
     });
+
+    it('should maintain value-less attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<input disabled>').trim())
+        .toBe('<input disabled />');
+    });
   });
 });

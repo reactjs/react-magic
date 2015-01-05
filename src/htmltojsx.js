@@ -392,12 +392,13 @@ HTMLtoJSX.prototype = {
         return this._getStyleAttribute(attribute.value);
       default:
         var name = ATTRIBUTE_MAPPING[attribute.name] || attribute.name;
-        var result = name + '=';
+        var result = name;
+
         // Numeric values should be output as {123} not "123"
         if (isNumeric(attribute.value)) {
-          result += '{' + attribute.value + '}';
-        } else {
-          result += '"' + attribute.value.replace('"', '&quot;') + '"';
+          result += '={' + attribute.value + '}';
+        } else if (attribute.value.length > 0) {
+          result += '="' + attribute.value.replace('"', '&quot;') + '"';
         }
         return result;
     }
