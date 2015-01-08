@@ -22,9 +22,17 @@ var NODE_TYPE = {
   TEXT: 3,
   COMMENT: 8
 };
+
 var ATTRIBUTE_MAPPING = {
   'for': 'htmlFor',
   'class': 'className'
+};
+
+var ELEMENT_ATTRIBUTE_MAPPING = {
+  'input': {
+    'checked': 'defaultChecked',
+    'value': 'defaultValue'
+  }
 };
 
 /**
@@ -391,7 +399,12 @@ HTMLtoJSX.prototype = {
       case 'style':
         return this._getStyleAttribute(attribute.value);
       default:
-        var name = ATTRIBUTE_MAPPING[attribute.name] || attribute.name;
+        var tagName = node.tagName.toLowerCase();
+        var name =
+          (ELEMENT_ATTRIBUTE_MAPPING[tagName] &&
+            ELEMENT_ATTRIBUTE_MAPPING[tagName][attribute.name]) ||
+          ATTRIBUTE_MAPPING[attribute.name] ||
+          attribute.name;
         var result = name;
 
         // Numeric values should be output as {123} not "123"
