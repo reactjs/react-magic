@@ -81,6 +81,20 @@ describe('htmltojsx', function() {
     ].join('\n'));
   });
 
+  describe('escaped characters', function() {
+    it('should handle escaped < symbols', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div>&lt;</div>').trim())
+        .toBe('<div>&lt;</div>');
+    });
+
+    it('should handle unescaped copyright symbols', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div>©</div>').trim())
+        .toBe('<div>©</div>');
+    });
+  });
+
   describe('Attribute transformations', function() {
     it('should convert basic "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });

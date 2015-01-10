@@ -122,6 +122,21 @@ function isNumeric(input) {
     && (typeof input === 'number' || parseInt(input, 10) == input);
 }
 
+var tempEl = document.createElement('div');
+/**
+ * Escapes special characters by converting them to their escaped equivalent
+ * (eg. "<" to "&lt;"). Only escapes characters that absolutely must be escaped.
+ *
+ * @param {string} value
+ * @return {string}
+ */
+function escapeSpecialChars(value) {
+  // Uses this One Weird Trick to escape text - Raw text inserted as textContent
+  // will have its escaped version in innerHTML.
+  tempEl.textContent = value;
+  return tempEl.innerHTML;
+}
+
 var HTMLtoJSX = function(config) {
   this.config = config || {};
 
@@ -369,7 +384,7 @@ HTMLtoJSX.prototype = {
     if (text.indexOf('\n') > -1) {
       text = node.textContent.replace(/\n\s*/g, this._getIndentedNewline());
     }
-    this.output += text;
+    this.output += escapeSpecialChars(text);
   },
 
   /**
