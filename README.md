@@ -63,9 +63,10 @@ IE6, you've come to the wrong place.
 Development
 ===========
 Run `gulp watch` from the root to automatically rebuild the compiled JavaScript
-files as you edit them. To run the unit tests, start a web server then navigate 
-to `build/site/test.htm`. If you use the LiveReload browser extension, the tests 
-will automatically reload and rerun when you modify any of the JavaScript.
+files as you edit them. To run the unit tests, point a web server to 
+`build/site` then navigate to `test.htm`. If you use the LiveReload browser 
+extension, the tests will automatically reload and rerun when you modify any of 
+the JavaScript.
 
 Similar Projects
 ================
