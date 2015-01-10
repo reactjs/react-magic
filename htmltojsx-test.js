@@ -81,11 +81,31 @@ describe('htmltojsx', function() {
     ].join('\n'));
   });
 
+  describe('escaped characters', function() {
+    it('should handle escaped < symbols', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div>&lt;</div>').trim())
+        .toBe('<div>&lt;</div>');
+    });
+
+    it('should handle unescaped copyright symbols', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div>©</div>').trim())
+        .toBe('<div>©</div>');
+    });
+  });
+
   describe('Attribute transformations', function() {
     it('should convert basic "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="color: red">Test</div>').trim())
         .toBe('<div style={{color: \'red\'}}>Test</div>');
+    });
+
+    it('should convert CSS shorthand "style" values', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="padding: 10px 15px 20px 25px;">Test</div>').trim())
+        .toBe('<div style={{padding: \'10px 15px 20px 25px\'}}>Test</div>');
     });
 
     it('should convert numeric "style" attributes', function() {
@@ -110,6 +130,30 @@ describe('htmltojsx', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<label for="potato">Test</label>').trim())
         .toBe('<label htmlFor="potato">Test</label>');
+    });
+
+    it('should maintain value-less attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<input disabled>').trim())
+        .toBe('<input disabled />');
+    });
+
+    it('should set <input> "value" to "defaultValue" to allow input editing', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<input value="Darth Vader">').trim())
+          .toBe('<input defaultValue="Darth Vader" />');
+    });
+
+    it('should not set "value" to "defaultValue" for non-<input> elements', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<select><option value="Hans"></select>').trim())
+          .toBe('<select><option value="Hans" /></select>');
+    });
+
+    it('should set <input> "checked" to "defaultChecked" to allow box checking', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<input type="checkbox" checked>').trim())
+          .toBe('<input type="checkbox" defaultChecked />');
     });
   });
 });

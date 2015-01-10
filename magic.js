@@ -307,9 +307,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  TEXT: 3,
 	  COMMENT: 8
 	};
+
 	var ATTRIBUTE_MAPPING = {
 	  'for': 'htmlFor',
 	  'class': 'className'
+	};
+
+	var ELEMENT_ATTRIBUTE_MAPPING = {
+	  'input': {
+	    'checked': 'defaultChecked',
+	    'value': 'defaultValue'
+	  }
 	};
 
 	/**
@@ -380,12 +388,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * Determines if the CSS value can be converted from a
+	 * 'px' suffixed string to a numeric value
+	 *
+	 * @param {string} value CSS property value
+	 * @return {boolean}
+	 */
+	function isConvertiblePixelValue(value) {
+	  return /^\d+px$/.test(value);
+	}
+
+	/**
 	 * Determines if the specified string consists entirely of numeric characters.
 	 */
 	function isNumeric(input) {
 	  return input !== undefined
 	    && input !== null
 	    && (typeof input === 'number' || parseInt(input, 10) == input);
+	}
+
+	var createElement;
+	if (true) {
+	  // Browser environment, use document.createElement directly.
+	  createElement = function(tag) {
+	    return document.createElement(tag);
+	  };
+	} else {
+	  // Node.js-like environment, use jsdom.
+	  var jsdom = require('jsdom').jsdom;
+	  var window = jsdom().parentWindow;
+	  createElement = function(tag) {
+	    return window.document.createElement(tag);
+	  };
+	}
+
+	var tempEl = createElement('div');
+	/**
+	 * Escapes special characters by converting them to their escaped equivalent
+	 * (eg. "<" to "&lt;"). Only escapes characters that absolutely must be escaped.
+	 *
+	 * @param {string} value
+	 * @return {string}
+	 */
+	function escapeSpecialChars(value) {
+	  // Uses this One Weird Trick to escape text - Raw text inserted as textContent
+	  // will have its escaped version in innerHTML.
+	  tempEl.textContent = value;
+	  return tempEl.innerHTML;
 	}
 
 	var HTMLtoJSX = function(config) {
@@ -418,17 +467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  convert: function(html) {
 	    this.reset();
 
-	    var containerEl;
-	    if (true) {
-	      // It turns out browsers have good HTML parsers (imagine that).
-	      // Let's take advantage of it.
-	      containerEl = document.createElement('div');
-	    } else {
-	      var jsdom = require('jsdom').jsdom;
-	      var window = jsdom().parentWindow;
-	      var containerEl = window.document.createElement('div');
-	    }
-
+	    var containerEl = createElement('div');
 	    containerEl.innerHTML = '\n' + this._cleanInput(html) + '\n';
 
 	    if (this.config.createClass) {
@@ -635,7 +674,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (text.indexOf('\n') > -1) {
 	      text = node.textContent.replace(/\n\s*/g, this._getIndentedNewline());
 	    }
-	    this.output += text;
+	    this.output += escapeSpecialChars(text);
 	  },
 
 	  /**
@@ -665,13 +704,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      case 'style':
 	        return this._getStyleAttribute(attribute.value);
 	      default:
-	        var name = ATTRIBUTE_MAPPING[attribute.name] || attribute.name;
-	        var result = name + '=';
+	        var tagName = node.tagName.toLowerCase();
+	        var name =
+	          (ELEMENT_ATTRIBUTE_MAPPING[tagName] &&
+	            ELEMENT_ATTRIBUTE_MAPPING[tagName][attribute.name]) ||
+	          ATTRIBUTE_MAPPING[attribute.name] ||
+	          attribute.name;
+	        var result = name;
+
 	        // Numeric values should be output as {123} not "123"
 	        if (isNumeric(attribute.value)) {
-	          result += '{' + attribute.value + '}';
-	        } else {
-	          result += '"' + attribute.value.replace('"', '&quot;') + '"';
+	          result += '={' + attribute.value + '}';
+	        } else if (attribute.value.length > 0) {
+	          result += '="' + attribute.value.replace('"', '&quot;') + '"';
 	        }
 	        return result;
 	    }
@@ -753,11 +798,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (isNumeric(value)) {
 	      // If numeric, no quotes
 	      return value;
-	    } else if (endsWith(value, 'px')) {
+	    } else if (isConvertiblePixelValue(value)) {
 	      // "500px" -> 500
 	      return trimEnd(value, 'px');
 	    } else {
-	      // Proably a string, wrap it in quotes
+	      // Probably a string, wrap it in quotes
 	      return '\'' + value.replace(/'/g, '"') + '\'';
 	    }
 	  }
