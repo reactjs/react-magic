@@ -81,24 +81,6 @@ describe('htmltojsx', function() {
     ].join('\n'));
   });
 
-  it('should set <input> "value" to "defaultValue" to allow input editing', function() {
-    var converter = new HTMLtoJSX({ createClass: false });
-      expect(converter.convert('<input value="Darth Vader">').trim())
-        .toBe('<input defaultValue="Darth Vader" />');
-  });
-
-  it('should not set "value" to "defaultValue" for non-<input> elements', function() {
-    var converter = new HTMLtoJSX({ createClass: false });
-      expect(converter.convert('<select><option value="Hans"></select>').trim())
-        .toBe('<select><option value="Hans" /></select>');
-  });
-
-  it('should set <input> "checked" to "defaultChecked" to allow box checking', function() {
-    var converter = new HTMLtoJSX({ createClass: false });
-      expect(converter.convert('<input type="checkbox" checked>').trim())
-        .toBe('<input type="checkbox" defaultChecked />');
-  });
-
   describe('Attribute transformations', function() {
     it('should convert basic "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
@@ -140,6 +122,24 @@ describe('htmltojsx', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<input disabled>').trim())
         .toBe('<input disabled />');
+    });
+
+    it('should set <input> "value" to "defaultValue" to allow input editing', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<input value="Darth Vader">').trim())
+          .toBe('<input defaultValue="Darth Vader" />');
+    });
+
+    it('should not set "value" to "defaultValue" for non-<input> elements', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<select><option value="Hans"></select>').trim())
+          .toBe('<select><option value="Hans" /></select>');
+    });
+
+    it('should set <input> "checked" to "defaultChecked" to allow box checking', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<input type="checkbox" checked>').trim())
+          .toBe('<input type="checkbox" defaultChecked />');
     });
   });
 });
