@@ -60,6 +60,13 @@ Even magic comes with its limitations. Since this project is experimental, it ma
 work properly in all browsers. If you're looking for something that works in
 IE6, you've come to the wrong place.
 
+Development
+===========
+Run `gulp watch` from the root to automatically rebuild the compiled JavaScript
+files as you edit them. To run the unit tests, start a web server then navigate 
+to `build/site/test.htm`. If you use the LiveReload browser extension, the tests 
+will automatically reload and rerun when you modify any of the JavaScript.
+
 Similar Projects
 ================
 This project has been inspired by the
