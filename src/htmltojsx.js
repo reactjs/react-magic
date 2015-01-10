@@ -122,7 +122,22 @@ function isNumeric(input) {
     && (typeof input === 'number' || parseInt(input, 10) == input);
 }
 
-var tempEl = document.createElement('div');
+var createElement;
+if (typeof IN_BROWSER !== 'undefined' && IN_BROWSER) {
+  // Browser environment, use document.createElement directly.
+  createElement = function(tag) {
+    return document.createElement(tag);
+  };
+} else {
+  // Node.js-like environment, use jsdom.
+  var jsdom = require('jsdom').jsdom;
+  var window = jsdom().parentWindow;
+  createElement = function(tag) {
+    return window.document.createElement(tag);
+  };
+}
+
+var tempEl = createElement('div');
 /**
  * Escapes special characters by converting them to their escaped equivalent
  * (eg. "<" to "&lt;"). Only escapes characters that absolutely must be escaped.
@@ -167,17 +182,7 @@ HTMLtoJSX.prototype = {
   convert: function(html) {
     this.reset();
 
-    var containerEl;
-    if (typeof IN_BROWSER !== 'undefined' && IN_BROWSER) {
-      // It turns out browsers have good HTML parsers (imagine that).
-      // Let's take advantage of it.
-      containerEl = document.createElement('div');
-    } else {
-      var jsdom = require('jsdom').jsdom;
-      var window = jsdom().parentWindow;
-      var containerEl = window.document.createElement('div');
-    }
-
+    var containerEl = createElement('div');
     containerEl.innerHTML = '\n' + this._cleanInput(html) + '\n';
 
     if (this.config.createClass) {
