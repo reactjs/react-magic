@@ -4,7 +4,7 @@ HTMLtoJSX
 HTMLtoJSX converts HTML to JSX for use with [React](facebook.github.io/react/).
 
 Installation
-------------
+============
 
 ```
 npm install htmltojsx
@@ -13,7 +13,7 @@ npm install htmltojsx
 Alternatively, a web-based version is available at http://facebook.github.io/react/html-jsx.html
 
 Usage
------
+=====
 HTMLtoJSX can be used either as a command-line application or as a Node.js module. To use the command-line version, invoke the `htmltojsx` command:
 
 ```
@@ -40,3 +40,20 @@ var converter = new HTMLtoJSX({
 });
 var output = converter.convert('<div>Hello world!</div>');
 ```
+
+Changelog
+=========
+0.2.1 - 1st February 2015
+-------------------------
+ - [#10](https://github.com/reactjs/react-magic/pull/10) - Handle inline CSS
+   shorthand style values
+ - [#13](https://github.com/reactjs/react-magic/pull/13) - Maintain valueless
+   attributes handled by JSX
+ - [#15](https://github.com/reactjs/react-magic/pull/15) - Use uncontrolled
+   input fields so they can still be edited
+ - [#11](https://github.com/reactjs/react-magic/issues/11) - Ensure HTML
+   entities are handled correctly
+
+0.2.0 - 7th September 2014
+--------------------------
+ - Initial release
