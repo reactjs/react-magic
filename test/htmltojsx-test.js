@@ -119,7 +119,13 @@ describe('htmltojsx', function() {
       expect(converter.convert('<div style="font-size: 12pt">Test</div>').trim())
         .toBe('<div style={{fontSize: \'12pt\'}}>Test</div>');
     });
-
+	
+	it('should convert uppercase "style" attributes', function() {
+	  var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="TEXT-ALIGN: center">Test</div>').trim())
+        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');	  
+	});
+	
     it('should convert "class" attribute', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div class="awesome">Test</div>').trim())
@@ -131,7 +137,31 @@ describe('htmltojsx', function() {
       expect(converter.convert('<label for="potato">Test</label>').trim())
         .toBe('<label htmlFor="potato">Test</label>');
     });
-
+	
+	it('should convert "maxlength" attribute to "maxLength"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<input maxlength=2></input>').trim())
+        .toBe('<input maxLength={2} />');
+    });
+	
+	it('should convert "http-equiv" attribute to "httpEquiv"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<meta http-equiv="refresh">').trim())
+        .toBe('<meta httpEquiv="refresh" />');
+    });
+	
+	it('should convert "accept-charset" attribute to "acceptCharset"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<form accept-charset="UTF-8">Test</form>').trim())
+        .toBe('<form acceptCharset="UTF-8">Test</form>');
+    });
+	
+	it('should convert "enctype" attribute to "encType"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<form method="post" enctype="application/x-www-form-urlencoded">Test</form>').trim())
+        .toBe('<form method="post" encType="application/x-www-form-urlencoded">Test</form>');
+    });
+	
     it('should maintain value-less attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<input disabled>').trim())
