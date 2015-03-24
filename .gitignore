@@ -1,3 +1,6 @@
 node_modules
 build
 temp
+.DS_Store
+*.sublime-project
+*.sublime-workspace
