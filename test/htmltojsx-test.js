@@ -62,6 +62,23 @@ describe('htmltojsx', function() {
     );
   });
 
+  it('should create a new React without var name', function() {
+    var converter = new HTMLtoJSX({
+      createClass: true
+    });
+    var result = converter.convert('<div>Hello world!</div>');
+    expect(result).toBe(
+      'React.createClass({\n' +
+      '  render: function() {\n' +
+      '    return (\n' +
+      '\n' +
+      '      <div>Hello world!</div>\n' +
+      '    );\n' +
+      '  }\n' +
+      '});'
+    );
+  });
+
   it('should wrap HTML with a div when multiple top-level', function() {
     var converter = new HTMLtoJSX({
       createClass: true,

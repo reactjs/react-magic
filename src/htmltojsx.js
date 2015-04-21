@@ -174,9 +174,6 @@ var HTMLtoJSX = function(config) {
   if (!this.config.indent) {
     this.config.indent = '  ';
   }
-  if (!this.config.outputClassName) {
-    this.config.outputClassName = 'NewComponent';
-  }
 };
 HTMLtoJSX.prototype = {
   /**
