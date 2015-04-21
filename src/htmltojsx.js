@@ -481,7 +481,7 @@ StyleParser.prototype = {
       var key = style.substr(0, firstColon);
       var value = style.substr(firstColon + 1).trim();
       if (key !== '') {
-        // if not vendor specific lowercase name
+        // Lowercase style name if not vendor specific
         // TODO better vendor prefix handling
         if(key[0] != '-') {
           key = key.toLowerCase();
