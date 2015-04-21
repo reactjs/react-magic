@@ -37,15 +37,15 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
 
 var HTMLDOMPropertyConfig = require('react/lib/HTMLDOMPropertyConfig');
 
-//populate property map with ReactJS's attribute and property mappings
-//TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
+// Populate property map with ReactJS's attribute and property mappings
+// TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
 for (var propname in HTMLDOMPropertyConfig.Properties) {
-	if (!HTMLDOMPropertyConfig.Properties.hasOwnProperty(propname)) continue;
+  if (!HTMLDOMPropertyConfig.Properties.hasOwnProperty(propname)) continue;
 
-	var mapFrom = HTMLDOMPropertyConfig.DOMAttributeNames[propname] || propname.toLowerCase();
+  var mapFrom = HTMLDOMPropertyConfig.DOMAttributeNames[propname] || propname.toLowerCase();
 
-	if (!ATTRIBUTE_MAPPING[mapFrom])
-		ATTRIBUTE_MAPPING[mapFrom] = propname;
+  if (!ATTRIBUTE_MAPPING[mapFrom])
+    ATTRIBUTE_MAPPING[mapFrom] = propname;
 }
 
 /**
@@ -484,10 +484,12 @@ StyleParser.prototype = {
       var key = style.substr(0, firstColon);
       var value = style.substr(firstColon + 1).trim();
       if (key !== '') {
-		//if not vendor specific lowercase name
-		//TODO better vendor prefix handling
-		if(key[0] != '-') key = key.toLowerCase();
-		
+        // if not vendor specific lowercase name
+        // TODO better vendor prefix handling
+        if(key[0] != '-') {
+          key = key.toLowerCase();
+        }
+
         this.styles[key] = value;
       }
     }, this);
