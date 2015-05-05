@@ -187,7 +187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	} else {
 	  // Node.js-like environment, use jsdom.
 	  var jsdom = require('jsdom').jsdom;
-	  var window = jsdom().parentWindow;
+	  var window = jsdom().defaultView;
 	  createElement = function(tag) {
 	    return window.document.createElement(tag);
 	  };
@@ -216,9 +216,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  if (!this.config.indent) {
 	    this.config.indent = '  ';
-	  }
-	  if (!this.config.outputClassName) {
-	    this.config.outputClassName = 'NewComponent';
 	  }
 	};
 	HTMLtoJSX.prototype = {
