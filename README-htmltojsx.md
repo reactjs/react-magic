@@ -43,6 +43,13 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.2.2 - 4th May 2015
+--------------------
+ - [#21](https://github.com/reactjs/react-magic/issues/21) - Allow output of 
+   React classes without class name
+ - [#25](https://github.com/reactjs/react-magic/pull/25) - Update version of 
+   JSDOM
+
 0.2.1 - 1st February 2015
 -------------------------
  - [#10](https://github.com/reactjs/react-magic/pull/10) - Handle inline CSS
