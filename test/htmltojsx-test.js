@@ -136,6 +136,24 @@ describe('htmltojsx', function() {
       expect(converter.convert('<div style="font-size: 12pt">Test</div>').trim())
         .toBe('<div style={{fontSize: \'12pt\'}}>Test</div>');
     });
+	
+	it('should convert vendor-prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-moz-hyphens: auto; -webkit-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
+    });
+    
+	it('should convert uppercase vendor-prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-MOZ-HYPHENS: auto; -WEBKIT-HYPHENS: auto">Test</div>').trim())
+        .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
+    });
+	
+	it('should convert -ms- prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-ms-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{msHyphens: \'auto\'}}>Test</div>');
+    });
 
     it('should convert uppercase "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
