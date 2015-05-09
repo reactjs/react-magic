@@ -515,7 +515,7 @@ StyleParser.prototype = {
    */
   toJSXKey: function(key) {
     // Don't capitalize -ms- prefix
-    if(key.startsWith('-ms-')) {
+    if(/^-ms-/.test(key)) {
       key = key.substr(1);
     }
     return hyphenToCamelCase(key);
