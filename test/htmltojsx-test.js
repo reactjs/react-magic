@@ -148,11 +148,23 @@ describe('htmltojsx', function() {
       expect(converter.convert('<div style="-MOZ-HYPHENS: auto; -WEBKIT-HYPHENS: auto">Test</div>').trim())
         .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
     });
-	
+    
+	it('should convert "style" attributes with vendor prefix-like strings in the middle and mixed case', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="myclass-MOZ-HYPHENS: auto; myclass-WEBKIT-HYPHENS: auto">Test</div>').trim())
+        .toBe('<div style={{myclassMozHyphens: \'auto\', myclassWebkitHyphens: \'auto\'}}>Test</div>');
+    });
+    
 	it('should convert -ms- prefix "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="-ms-hyphens: auto">Test</div>').trim())
         .toBe('<div style={{msHyphens: \'auto\'}}>Test</div>');
+    });
+
+	it('should convert "style" attributes with -ms- in the middle', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="myclass-ms-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{myclassMsHyphens: \'auto\'}}>Test</div>');
     });
 
     it('should convert uppercase "style" attributes', function() {
