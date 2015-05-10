@@ -35,6 +35,21 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
   }
 };
 
+var HTMLDOMPropertyConfig = require('react/lib/HTMLDOMPropertyConfig');
+
+// Populate property map with ReactJS's attribute and property mappings
+// TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
+for (var propname in HTMLDOMPropertyConfig.Properties) {
+  if (!HTMLDOMPropertyConfig.Properties.hasOwnProperty(propname)) {
+    continue;
+  }
+
+  var mapFrom = HTMLDOMPropertyConfig.DOMAttributeNames[propname] || propname.toLowerCase();
+
+  if (!ATTRIBUTE_MAPPING[mapFrom])
+    ATTRIBUTE_MAPPING[mapFrom] = propname;
+}
+
 /**
  * Repeats a string a certain number of times.
  * Also: the future is bright and consists of native string repetition:
@@ -468,6 +483,8 @@ StyleParser.prototype = {
       var key = style.substr(0, firstColon);
       var value = style.substr(firstColon + 1).trim();
       if (key !== '') {
+        // Style key should be case insensitive
+        key = key.toLowerCase();
         this.styles[key] = value;
       }
     }, this);
@@ -497,6 +514,10 @@ StyleParser.prototype = {
    * @return {string} JSX style key
    */
   toJSXKey: function(key) {
+    // Don't capitalize -ms- prefix
+    if(/^-ms-/.test(key)) {
+      key = key.substr(1);
+    }
     return hyphenToCamelCase(key);
   },
 
