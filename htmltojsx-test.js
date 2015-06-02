@@ -137,6 +137,42 @@ describe('htmltojsx', function() {
         .toBe('<div style={{fontSize: \'12pt\'}}>Test</div>');
     });
 
+    it('should convert vendor-prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-moz-hyphens: auto; -webkit-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
+    });
+    
+    it('should convert uppercase vendor-prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-MOZ-HYPHENS: auto; -WEBKIT-HYPHENS: auto">Test</div>').trim())
+        .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
+    });
+    
+    it('should convert "style" attributes with vendor prefix-like strings in the middle and mixed case', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="myclass-MOZ-HYPHENS: auto; myclass-WEBKIT-HYPHENS: auto">Test</div>').trim())
+        .toBe('<div style={{myclassMozHyphens: \'auto\', myclassWebkitHyphens: \'auto\'}}>Test</div>');
+    });
+    
+    it('should convert -ms- prefix "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="-ms-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{msHyphens: \'auto\'}}>Test</div>');
+    });
+
+    it('should convert "style" attributes with -ms- in the middle', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="myclass-ms-hyphens: auto">Test</div>').trim())
+        .toBe('<div style={{myclassMsHyphens: \'auto\'}}>Test</div>');
+    });
+
+    it('should convert uppercase "style" attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<div style="TEXT-ALIGN: center">Test</div>').trim())
+        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');  
+    });
+
     it('should convert "class" attribute', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div class="awesome">Test</div>').trim())
@@ -147,6 +183,30 @@ describe('htmltojsx', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<label for="potato">Test</label>').trim())
         .toBe('<label htmlFor="potato">Test</label>');
+    });
+
+    it('should convert "maxlength" attribute to "maxLength"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<input maxlength=2></input>').trim())
+        .toBe('<input maxLength={2} />');
+    });
+
+    it('should convert "http-equiv" attribute to "httpEquiv"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<meta http-equiv="refresh">').trim())
+        .toBe('<meta httpEquiv="refresh" />');
+    });
+
+    it('should convert "accept-charset" attribute to "acceptCharset"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<form accept-charset="UTF-8">Test</form>').trim())
+        .toBe('<form acceptCharset="UTF-8">Test</form>');
+    });
+
+    it('should convert "enctype" attribute to "encType"', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<form method="post" enctype="application/x-www-form-urlencoded">Test</form>').trim())
+        .toBe('<form method="post" encType="application/x-www-form-urlencoded">Test</form>');
     });
 
     it('should maintain value-less attributes', function() {
