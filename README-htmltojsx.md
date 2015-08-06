@@ -43,6 +43,13 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.2.3 - 5th August 2015
+-----------------------
+ - [#8](https://github.com/reactjs/react-magic/issues/8) - Handle 
+   case-insensitive attributes and style names
+ - [#29](https://github.com/reactjs/react-magic/pull/29) - Switch to 
+   `jsdom-no-contextify` to support older versions of Node.js
+ - 
 0.2.2 - 4th May 2015
 --------------------
  - [#21](https://github.com/reactjs/react-magic/issues/21) - Allow output of 
