@@ -43,6 +43,11 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.2.4 - 6th August 2015
+-----------------------
+ - [#31](https://github.com/reactjs/react-magic/issues/31) - Fixed `jsdom`
+   dependency
+
 0.2.3 - 5th August 2015
 -----------------------
  - [#8](https://github.com/reactjs/react-magic/issues/8) - Handle 
