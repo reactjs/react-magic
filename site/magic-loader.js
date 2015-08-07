@@ -10,8 +10,8 @@
 
 (function(document) {
   var scripts = [
-    'http://fb.me/react-0.10.0.min.js',
-    'http://facebook.github.io/react/js/JSXTransformer.js',
+    'http://fb.me/react-0.13.3.min.js',
+    'http://fb.me/JSXTransformer-0.13.3.js',
     'http://reactjs.github.io/react-magic/magic.min.js'
   ];
 

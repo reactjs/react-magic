@@ -80,7 +80,7 @@ function reactComponentFromHTML(html) {
  */
 function render(html) {
   var processed = reactComponentFromHTML(html);
-  React.renderComponent(processed, document.body);
+  React.render(processed, document.body);
 }
 
 /**

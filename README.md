@@ -38,8 +38,8 @@ This handles loading all the required scripts. Alternatively, you can put all
 the required scripts instead:
 
 ```html
-<script src="http://fb.me/react-0.11.1.min.js"></script>
-<script src="http://fb.me/JSXTransformer-0.11.1.js"></script>
+<script src="http://fb.me/react-0.13.3.min.js"></script>
+<script src="http://fb.me/JSXTransformer-0.13.3.js"></script>
 <script src="http://reactjs.github.io/react-magic/magic.min.js"></script>
 ```
 
