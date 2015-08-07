@@ -136,7 +136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function render(html) {
 	  var processed = reactComponentFromHTML(html);
-	  React.renderComponent(processed, document.body);
+	  React.render(processed, document.body);
 	}
 
 	/**
@@ -430,7 +430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	} else {
 	  // Node.js-like environment, use jsdom.
-	  var jsdom = require('jsdom').jsdom;
+	  var jsdom = require('jsdom-no-contextify').jsdom;
 	  var window = jsdom().defaultView;
 	  createElement = function(tag) {
 	    return window.document.createElement(tag);
