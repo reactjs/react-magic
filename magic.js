@@ -469,6 +469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  reset: function() {
 	    this.output = '';
 	    this.level = 0;
+	    this._inPreTag = false;
 	  },
 	  /**
 	   * Main entry point to the converter. Given the specified HTML, returns a
@@ -650,11 +651,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      attributes.push(this._getElementAttribute(node, node.attributes[i]));
 	    }
 
+	    if (tagName === 'textarea') {
+	      // Hax: textareas need their inner text moved to a "value" attribute.
+	      attributes.push('value={' + JSON.stringify(node.value) + '}');
+	    }
+	    if (tagName === 'pre') {
+	      this._inPreTag = true;
+	    }
+
 	    this.output += '<' + tagName;
 	    if (attributes.length > 0) {
 	      this.output += ' ' + attributes.join(' ');
 	    }
-	    if (node.firstChild) {
+	    if (!this._isSelfClosing(node)) {
 	      this.output += '>';
 	    }
 	  },
@@ -665,14 +674,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Node} node
 	   */
 	  _endVisitElement: function(node) {
+	    var tagName = node.tagName.toLowerCase();
 	    // De-indent a bit
 	    // TODO: It's inefficient to do it this way :/
 	    this.output = trimEnd(this.output, this.config.indent);
-	    if (node.firstChild) {
-	      this.output += '</' + node.tagName.toLowerCase() + '>';
-	    } else {
+	    if (this._isSelfClosing(node)) {
 	      this.output += ' />';
+	    } else {
+	      this.output += '</' + node.tagName.toLowerCase() + '>';
 	    }
+
+	    if (tagName === 'pre') {
+	      this._inPreTag = false;
+	    }
+	  },
+
+	  /**
+	   * Determines if this element node should be rendered as a self-closing
+	   * tag.
+	   *
+	   * @param {Node} node
+	   * @return {boolean}
+	   */
+	  _isSelfClosing: function(node) {
+	    // If it has children, it's not self-closing
+	    // Exception: All children of a textarea are moved to a "value" attribute.
+	    return !node.firstChild || node.tagName.toLowerCase() === 'textarea';
 	  },
 
 	  /**
@@ -681,12 +708,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {TextNode} node
 	   */
 	  _visitText: function(node) {
-	    var text = node.textContent;
-	    // If there's a newline in the text, adjust the indent level
-	    if (text.indexOf('\n') > -1) {
-	      text = node.textContent.replace(/\n\s*/g, this._getIndentedNewline());
+	    var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
+	    if (parentTag === 'textarea') {
+	      // Ignore text content of textareas, as it will have already been moved
+	      // to a "value" attribute.
+	      return;
 	    }
-	    this.output += escapeSpecialChars(text);
+
+	    var text = escapeSpecialChars(node.textContent)
+
+	    if (this._inPreTag) {
+	      // If this text is contained within a <pre>, we need to ensure the JSX
+	      // whitespace coalescing rules don't eat the whitespace. This means
+	      // wrapping newlines and sequences of two or more spaces in variables.
+	      text = text
+	        .replace(/\r/g, '')
+	        .replace(/( {2,}|\n|\t)/g, function(whitespace) {
+	          return '{' + JSON.stringify(whitespace) + '}';
+	        });
+	    } else {
+	      // If there's a newline in the text, adjust the indent level
+	      if (text.indexOf('\n') > -1) {
+	        text = text.replace(/\n\s*/g, this._getIndentedNewline());
+	      }
+	    }
+	    this.output += text;
 	  },
 
 	  /**
@@ -695,12 +741,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Text} node
 	   */
 	  _visitComment: function(node) {
-	    // Do not render the comment
-	    // Since we remove comments, we also need to remove the next line break so we
-	    // don't end up with extra whitespace after every comment
-	    //if (node.nextSibling && node.nextSibling.nodeType === NODE_TYPE.TEXT) {
-	    //  node.nextSibling.textContent = node.nextSibling.textContent.replace(/\n\s*/, '');
-	    //}
 	    this.output += '{/*' + node.textContent.replace('*/', '* /') + '*/}';
 	  },
 
@@ -1048,7 +1088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {/**
+	/**
 	 * Copyright 2013-2015, Facebook, Inc.
 	 * All rights reserved.
 	 *
@@ -1121,7 +1161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    for (var propName in Properties) {
-	      ("production" !== process.env.NODE_ENV ? invariant(
+	      (false ? invariant(
 	        !DOMProperty.isStandardName.hasOwnProperty(propName),
 	        'injectDOMPropertyConfig(...): You\'re trying to inject DOM property ' +
 	        '\'%s\' which has already been injected. You may be accidentally ' +
@@ -1170,21 +1210,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      DOMProperty.hasOverloadedBooleanValue[propName] =
 	        checkMask(propConfig, DOMPropertyInjection.HAS_OVERLOADED_BOOLEAN_VALUE);
 
-	      ("production" !== process.env.NODE_ENV ? invariant(
+	      (false ? invariant(
 	        !DOMProperty.mustUseAttribute[propName] ||
 	          !DOMProperty.mustUseProperty[propName],
 	        'DOMProperty: Cannot require using both attribute and property: %s',
 	        propName
 	      ) : invariant(!DOMProperty.mustUseAttribute[propName] ||
 	        !DOMProperty.mustUseProperty[propName]));
-	      ("production" !== process.env.NODE_ENV ? invariant(
+	      (false ? invariant(
 	        DOMProperty.mustUseProperty[propName] ||
 	          !DOMProperty.hasSideEffects[propName],
 	        'DOMProperty: Properties that have side effects must use property: %s',
 	        propName
 	      ) : invariant(DOMProperty.mustUseProperty[propName] ||
 	        !DOMProperty.hasSideEffects[propName]));
-	      ("production" !== process.env.NODE_ENV ? invariant(
+	      (false ? invariant(
 	        !!DOMProperty.hasBooleanValue[propName] +
 	          !!DOMProperty.hasNumericValue[propName] +
 	          !!DOMProperty.hasOverloadedBooleanValue[propName] <= 1,
@@ -1343,8 +1383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	module.exports = DOMProperty;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
 
 /***/ },
 /* 4 */
@@ -1398,7 +1437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {/**
+	/**
 	 * Copyright 2013-2015, Facebook, Inc.
 	 * All rights reserved.
 	 *
@@ -1423,7 +1462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	var invariant = function(condition, format, a, b, c, d, e, f) {
-	  if ("production" !== process.env.NODE_ENV) {
+	  if (false) {
 	    if (format === undefined) {
 	      throw new Error('invariant requires an error message argument');
 	    }
@@ -1451,76 +1490,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	module.exports = invariant;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-
-	process.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined'
-	    && window.setImmediate;
-	    var canPost = typeof window !== 'undefined'
-	    && window.postMessage && window.addEventListener
-	    ;
-
-	    if (canSetImmediate) {
-	        return function (f) { return window.setImmediate(f) };
-	    }
-
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	}
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
 
 
 /***/ }

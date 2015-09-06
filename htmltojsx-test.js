@@ -142,19 +142,19 @@ describe('htmltojsx', function() {
       expect(converter.convert('<div style="-moz-hyphens: auto; -webkit-hyphens: auto">Test</div>').trim())
         .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert uppercase vendor-prefix "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="-MOZ-HYPHENS: auto; -WEBKIT-HYPHENS: auto">Test</div>').trim())
         .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert "style" attributes with vendor prefix-like strings in the middle and mixed case', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="myclass-MOZ-HYPHENS: auto; myclass-WEBKIT-HYPHENS: auto">Test</div>').trim())
         .toBe('<div style={{myclassMozHyphens: \'auto\', myclassWebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert -ms- prefix "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="-ms-hyphens: auto">Test</div>').trim())
@@ -170,7 +170,7 @@ describe('htmltojsx', function() {
     it('should convert uppercase "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="TEXT-ALIGN: center">Test</div>').trim())
-        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');  
+        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');
     });
 
     it('should convert "class" attribute', function() {
@@ -231,6 +231,29 @@ describe('htmltojsx', function() {
       var converter = new HTMLtoJSX({ createClass: false });
         expect(converter.convert('<input type="checkbox" checked>').trim())
           .toBe('<input type="checkbox" defaultChecked />');
+    });
+  });
+
+  describe('special tags', function() {
+    it('should use "value" for textareas', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<textarea>hello\nworld</textarea>').trim())
+        .toBe('<textarea value={"hello\\nworld"} />');
+    });
+
+    it('should do magic voodoo for <pre>', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<pre>hello\nworld</pre>').trim())
+        .toBe('<pre>hello{"\\n"}world</pre>');
+    });
+
+    it('should handle <pre> tags with children', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert(
+        '<pre><b>Hello world  yo</b>this   is   a<i>   test</i></pre>'
+      ).trim()).toBe(
+        '<pre><b>Hello world{"  "}yo</b>this{"   "}is{"   "}a<i>{"   "}test</i></pre>'
+      );
     });
   });
 });
