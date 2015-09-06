@@ -233,4 +233,27 @@ describe('htmltojsx', function() {
           .toBe('<input type="checkbox" defaultChecked />');
     });
   });
+
+  describe('special tags', function() {
+    it('should use "value" for textareas', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<textarea>hello\nworld</textarea>').trim())
+        .toBe('<textarea value={"hello\\nworld"} />');
+    });
+
+    it('should do magic voodoo for <pre>', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<pre>hello\nworld</pre>').trim())
+        .toBe('<pre>hello{"\\n"}world</pre>');
+    });
+
+    it('should handle <pre> tags with children', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert(
+        '<pre><b>Hello world  yo</b>this   is   a<i>   test</i></pre>'
+      ).trim()).toBe(
+        '<pre><b>Hello world{"  "}yo</b>this{"   "}is{"   "}a<i>{"   "}test</i></pre>'
+      );
+    });
+  });
 });

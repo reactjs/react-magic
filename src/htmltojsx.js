@@ -184,6 +184,7 @@ HTMLtoJSX.prototype = {
   reset: function() {
     this.output = '';
     this.level = 0;
+    this._inPreTag = false;
   },
   /**
    * Main entry point to the converter. Given the specified HTML, returns a
@@ -365,11 +366,19 @@ HTMLtoJSX.prototype = {
       attributes.push(this._getElementAttribute(node, node.attributes[i]));
     }
 
+    if (tagName === 'textarea') {
+      // Hax: textareas need their inner text moved to a "value" attribute.
+      attributes.push('value={' + JSON.stringify(node.value) + '}');
+    }
+    if (tagName === 'pre') {
+      this._inPreTag = true;
+    }
+
     this.output += '<' + tagName;
     if (attributes.length > 0) {
       this.output += ' ' + attributes.join(' ');
     }
-    if (node.firstChild) {
+    if (!this._isSelfClosing(node)) {
       this.output += '>';
     }
   },
@@ -380,14 +389,32 @@ HTMLtoJSX.prototype = {
    * @param {Node} node
    */
   _endVisitElement: function(node) {
+    var tagName = node.tagName.toLowerCase();
     // De-indent a bit
     // TODO: It's inefficient to do it this way :/
     this.output = trimEnd(this.output, this.config.indent);
-    if (node.firstChild) {
-      this.output += '</' + node.tagName.toLowerCase() + '>';
-    } else {
+    if (this._isSelfClosing(node)) {
       this.output += ' />';
+    } else {
+      this.output += '</' + node.tagName.toLowerCase() + '>';
     }
+
+    if (tagName === 'pre') {
+      this._inPreTag = false;
+    }
+  },
+
+  /**
+   * Determines if this element node should be rendered as a self-closing
+   * tag.
+   *
+   * @param {Node} node
+   * @return {boolean}
+   */
+  _isSelfClosing: function(node) {
+    // If it has children, it's not self-closing
+    // Exception: All children of a textarea are moved to a "value" attribute.
+    return !node.firstChild || node.tagName.toLowerCase() === 'textarea';
   },
 
   /**
@@ -396,12 +423,31 @@ HTMLtoJSX.prototype = {
    * @param {TextNode} node
    */
   _visitText: function(node) {
-    var text = node.textContent;
-    // If there's a newline in the text, adjust the indent level
-    if (text.indexOf('\n') > -1) {
-      text = node.textContent.replace(/\n\s*/g, this._getIndentedNewline());
+    var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
+    if (parentTag === 'textarea') {
+      // Ignore text content of textareas, as it will have already been moved
+      // to a "value" attribute.
+      return;
     }
-    this.output += escapeSpecialChars(text);
+
+    var text = escapeSpecialChars(node.textContent)
+
+    if (this._inPreTag) {
+      // If this text is contained within a <pre>, we need to ensure the JSX
+      // whitespace coalescing rules don't eat the whitespace. This means
+      // wrapping newlines and sequences of two or more spaces in variables.
+      text = text
+        .replace(/\r/g, '')
+        .replace(/( {2,}|\n|\t)/g, function(whitespace) {
+          return '{' + JSON.stringify(whitespace) + '}';
+        });
+    } else {
+      // If there's a newline in the text, adjust the indent level
+      if (text.indexOf('\n') > -1) {
+        text = text.replace(/\n\s*/g, this._getIndentedNewline());
+      }
+    }
+    this.output += text;
   },
 
   /**
@@ -410,12 +456,6 @@ HTMLtoJSX.prototype = {
    * @param {Text} node
    */
   _visitComment: function(node) {
-    // Do not render the comment
-    // Since we remove comments, we also need to remove the next line break so we
-    // don't end up with extra whitespace after every comment
-    //if (node.nextSibling && node.nextSibling.nodeType === NODE_TYPE.TEXT) {
-    //  node.nextSibling.textContent = node.nextSibling.textContent.replace(/\n\s*/, '');
-    //}
     this.output += '{/*' + node.textContent.replace('*/', '* /') + '*/}';
   },
 
