@@ -38,6 +38,7 @@ gulp.task('build-htmltojsx', function() {
       plugins: [
         new webpack.DefinePlugin({
           IN_BROWSER: true,
+          'process.env.NODE_ENV': '"production"'
         }),
       ],
     }))
@@ -59,6 +60,7 @@ gulp.task('build-magic', function() {
       plugins: [
         new webpack.DefinePlugin({
           IN_BROWSER: true,
+          'process.env.NODE_ENV': '"production"'
         }),
       ],
     }))
