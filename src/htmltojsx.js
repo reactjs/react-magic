@@ -367,8 +367,8 @@ HTMLtoJSX.prototype = {
     }
 
     if (tagName === 'textarea') {
-      // Hax: textareas need their inner text moved to a "value" attribute.
-      attributes.push('value={' + JSON.stringify(node.value) + '}');
+      // Hax: textareas need their inner text moved to a "defaultValue" attribute.
+      attributes.push('defaultValue={' + JSON.stringify(node.value) + '}');
     }
     if (tagName === 'pre') {
       this._inPreTag = true;
@@ -413,7 +413,7 @@ HTMLtoJSX.prototype = {
    */
   _isSelfClosing: function(node) {
     // If it has children, it's not self-closing
-    // Exception: All children of a textarea are moved to a "value" attribute.
+    // Exception: All children of a textarea are moved to a "defaultValue" attribute.
     return !node.firstChild || node.tagName.toLowerCase() === 'textarea';
   },
 
@@ -426,7 +426,7 @@ HTMLtoJSX.prototype = {
     var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
     if (parentTag === 'textarea') {
       // Ignore text content of textareas, as it will have already been moved
-      // to a "value" attribute.
+      // to a "defaultValue" attribute.
       return;
     }
 
