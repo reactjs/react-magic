@@ -235,10 +235,10 @@ describe('htmltojsx', function() {
   });
 
   describe('special tags', function() {
-    it('should use "value" for textareas', function() {
+    it('should use "defaultValue" for textareas', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<textarea>hello\nworld</textarea>').trim())
-        .toBe('<textarea value={"hello\\nworld"} />');
+        .toBe('<textarea defaultValue={"hello\\nworld"} />');
     });
 
     it('should do magic voodoo for <pre>', function() {
