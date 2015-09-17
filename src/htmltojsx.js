@@ -441,6 +441,9 @@ HTMLtoJSX.prototype = {
         .replace(/( {2,}|\n|\t)/g, function(whitespace) {
           return '{' + JSON.stringify(whitespace) + '}';
         });
+    } else if (parentTag === 'style') {
+      // Stringify the CSS rules inside <style> tags so {}'s don't break JSX
+      text = '{' + JSON.stringify(text) + '}';
     } else {
       // If there's a newline in the text, adjust the indent level
       if (text.indexOf('\n') > -1) {

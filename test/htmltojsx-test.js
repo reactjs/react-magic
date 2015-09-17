@@ -255,5 +255,11 @@ describe('htmltojsx', function() {
         '<pre><b>Hello world{"  "}yo</b>this{"   "}is{"   "}a<i>{"   "}test</i></pre>'
       );
     });
+
+    it('should wrap <style> tag contents in {" "}', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<style>\nh1 {\n    color: red;\n}\n</style>').trim())
+        .toBe('<style>{"\\nh1 {\\n    color: red;\\n}\\n"}</style>');
+    });
   });
 });
