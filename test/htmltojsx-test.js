@@ -258,8 +258,8 @@ describe('htmltojsx', function() {
 
     it('should wrap <style> tag contents in {" "}', function() {
       var converter = new HTMLtoJSX({ createClass: false });
-      expect(converter.convert('<style>\nh1 {\n    color: red;\n}\n</style>').trim())
-        .toBe('<style>{"\\nh1 {\\n    color: red;\\n}\\n"}</style>');
+      expect(converter.convert('<style>\nh1 {\n    background: url(\'http://foo.bar/img.jpg\';\n}\n</style>').trim())
+        .toBe('<style>{"\\nh1 {\\n    background: url(\'http://foo.bar/img.jpg\';\\n}\\n"}</style>');
     });
   });
 });
