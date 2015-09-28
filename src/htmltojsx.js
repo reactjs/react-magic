@@ -370,6 +370,10 @@ HTMLtoJSX.prototype = {
       // Hax: textareas need their inner text moved to a "defaultValue" attribute.
       attributes.push('defaultValue={' + JSON.stringify(node.value) + '}');
     }
+    if (tagName === 'style') {
+      // Hax: style tag contents need to be dangerously set due to liberal curly brace usage
+      attributes.push('dangerouslySetInnerHTML={{__html: ' + JSON.stringify(node.textContent) + ' }}');
+    }
     if (tagName === 'pre') {
       this._inPreTag = true;
     }
@@ -413,8 +417,8 @@ HTMLtoJSX.prototype = {
    */
   _isSelfClosing: function(node) {
     // If it has children, it's not self-closing
-    // Exception: All children of a textarea are moved to a "defaultValue" attribute.
-    return !node.firstChild || node.tagName.toLowerCase() === 'textarea';
+    // Exception: All children of a textarea are moved to a "defaultValue" attribute, style attributes are dangerously set.
+    return !node.firstChild || node.tagName.toLowerCase() === 'textarea' || node.tagName.toLowerCase() === 'style';
   },
 
   /**
@@ -424,9 +428,9 @@ HTMLtoJSX.prototype = {
    */
   _visitText: function(node) {
     var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
-    if (parentTag === 'textarea') {
-      // Ignore text content of textareas, as it will have already been moved
-      // to a "defaultValue" attribute.
+    if (parentTag === 'textarea' || parentTag === 'style') {
+      // Ignore text content of textareas and styles, as it will have already been moved
+      // to a "defaultValue" attribute and "dangerouslySetInnerHTML" attribute respectively.
       return;
     }
 
@@ -441,9 +445,6 @@ HTMLtoJSX.prototype = {
         .replace(/( {2,}|\n|\t)/g, function(whitespace) {
           return '{' + JSON.stringify(whitespace) + '}';
         });
-    } else if (parentTag === 'style') {
-      // Stringify the CSS rules inside <style> tags so {}'s don't break JSX
-      text = '{' + JSON.stringify(text) + '}';
     } else {
       // If there's a newline in the text, adjust the indent level
       if (text.indexOf('\n') > -1) {
