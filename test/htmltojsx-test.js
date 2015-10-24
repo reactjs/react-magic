@@ -243,8 +243,8 @@ describe('htmltojsx', function() {
 
     it('should do magic voodoo for <pre>', function() {
       var converter = new HTMLtoJSX({ createClass: false });
-      expect(converter.convert('<pre>hello\nworld</pre>').trim())
-        .toBe('<pre>hello{"\\n"}world</pre>');
+      expect(converter.convert('<pre>hello\nworld{foo}</pre>').trim())
+        .toBe('<pre>hello{"\\n"}world{"{"}foo{"}"}</pre>');
     });
 
     it('should handle <pre> tags with children', function() {
