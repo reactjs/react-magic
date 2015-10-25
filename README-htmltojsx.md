@@ -32,7 +32,7 @@ Options:
 
 To use the Node.js module, `require('htmltojsx')` and create a new instance. This is the same interface as the web-based version:
 
-```
+```js
 var HTMLtoJSX = require('htmltojsx');
 var converter = new HTMLtoJSX({
   createClass: true,
@@ -54,7 +54,7 @@ Changelog
    case-insensitive attributes and style names
  - [#29](https://github.com/reactjs/react-magic/pull/29) - Switch to 
    `jsdom-no-contextify` to support older versions of Node.js
- - 
+
 0.2.2 - 4th May 2015
 --------------------
  - [#21](https://github.com/reactjs/react-magic/issues/21) - Allow output of 
