@@ -255,5 +255,11 @@ describe('htmltojsx', function() {
         '<pre><b>Hello world{"  "}yo</b>this{"   "}is{"   "}a<i>{"   "}test</i></pre>'
       );
     });
+
+    it('should dangerously set <style> tag contents', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<style>\nh1 {\n    background: url(\'http://foo.bar/img.jpg\';\n}\n</style>').trim())
+        .toBe('<style dangerouslySetInnerHTML={{__html: "\\nh1 {\\n    background: url(\'http://foo.bar/img.jpg\';\\n}\\n" }} />');
+    });
   });
 });
