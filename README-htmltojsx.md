@@ -43,6 +43,12 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.2.5 - 26th October 2015
+-------------------------
+ - [#33](https://github.com/reactjs/react-magic/issues/33) - Correctly handle `<textarea>`s and `<pre>`s
+ - [#35](https://github.com/reactjs/react-magic/issues/35) - Handle internal stylesheets (`<style>` tags). *Thanks to [Trevor Copeland](https://github.com/sickslives)*
+
+
 0.2.4 - 6th August 2015
 -----------------------
  - [#31](https://github.com/reactjs/react-magic/issues/31) - Fixed `jsdom`
