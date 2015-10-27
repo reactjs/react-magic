@@ -423,8 +423,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (tagName === 'textarea') {
-	      // Hax: textareas need their inner text moved to a "value" attribute.
-	      attributes.push('value={' + JSON.stringify(node.value) + '}');
+	      // Hax: textareas need their inner text moved to a "defaultValue" attribute.
+	      attributes.push('defaultValue={' + JSON.stringify(node.value) + '}');
+	    }
+	    if (tagName === 'style') {
+	      // Hax: style tag contents need to be dangerously set due to liberal curly brace usage
+	      attributes.push('dangerouslySetInnerHTML={{__html: ' + JSON.stringify(node.textContent) + ' }}');
 	    }
 	    if (tagName === 'pre') {
 	      this._inPreTag = true;
@@ -469,8 +473,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  _isSelfClosing: function(node) {
 	    // If it has children, it's not self-closing
-	    // Exception: All children of a textarea are moved to a "value" attribute.
-	    return !node.firstChild || node.tagName.toLowerCase() === 'textarea';
+	    // Exception: All children of a textarea are moved to a "defaultValue" attribute, style attributes are dangerously set.
+	    return !node.firstChild || node.tagName.toLowerCase() === 'textarea' || node.tagName.toLowerCase() === 'style';
 	  },
 
 	  /**
@@ -480,9 +484,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  _visitText: function(node) {
 	    var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
-	    if (parentTag === 'textarea') {
-	      // Ignore text content of textareas, as it will have already been moved
-	      // to a "value" attribute.
+	    if (parentTag === 'textarea' || parentTag === 'style') {
+	      // Ignore text content of textareas and styles, as it will have already been moved
+	      // to a "defaultValue" attribute and "dangerouslySetInnerHTML" attribute respectively.
 	      return;
 	    }
 
@@ -494,7 +498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // wrapping newlines and sequences of two or more spaces in variables.
 	      text = text
 	        .replace(/\r/g, '')
-	        .replace(/( {2,}|\n|\t)/g, function(whitespace) {
+	        .replace(/( {2,}|\n|\t|\{|\})/g, function(whitespace) {
 	          return '{' + JSON.stringify(whitespace) + '}';
 	        });
 	    } else {
