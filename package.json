@@ -5,20 +5,20 @@
   "main": "src/htmltojsx.js",
   "bin": "src/cli.js",
   "dependencies": {
-    "react": "~0.13.0",
-    "yargs": "~1.3.1",
+    "react": "~0.14.6",
+    "yargs": "~3.32.0",
     "jsdom-no-contextify": "~3.1.0"
   },
   "devDependencies": {
-    "gulp": "~3.8.7",
-    "webpack": "~1.4.0-beta3",
-    "gulp-webpack": "~0.3.0",
+    "gulp": "~3.9.0",
+    "webpack": "~1.12.11",
+    "gulp-webpack": "~1.5.0",
     "gulp-rename": "~1.2.0",
-    "gulp-uglify": "~1.0.1",
-    "gulp-gh-pages": "~0.3.3",
-    "merge-stream": "~0.1.5",
-    "del": "~0.1.2",
-    "gulp-livereload": "~2.1.1"
+    "gulp-uglify": "~1.5.1",
+    "gulp-gh-pages": "~0.5.4",
+    "merge-stream": "~1.0.0",
+    "del": "~2.2.0",
+    "gulp-livereload": "~3.8.1"
   },
   "repository": {
     "type": "git",
