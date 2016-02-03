@@ -434,7 +434,7 @@ HTMLtoJSX.prototype = {
       return;
     }
 
-    var text = escapeSpecialChars(node.textContent)
+    var text = escapeSpecialChars(node.textContent);
 
     if (this._inPreTag) {
       // If this text is contained within a <pre>, we need to ensure the JSX
@@ -448,7 +448,6 @@ HTMLtoJSX.prototype = {
     } else {
       // Handle any curly braces.
       text = text
-        .replace(/\'/g, "\"")
         .replace(/(\{|\})/g, function(brace) {
             return '{\'' + brace + '\'}';
         });
