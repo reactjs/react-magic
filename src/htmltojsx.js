@@ -198,14 +198,19 @@ HTMLtoJSX.prototype = {
     var containerEl = createElement('div');
     containerEl.innerHTML = '\n' + this._cleanInput(html) + '\n';
 
-    if (this.config.createClass) {
-      if (this.config.outputClassName) {
-        this.output = 'var ' + this.config.outputClassName + ' = React.createClass({\n';
-      } else {
-        this.output = 'React.createClass({\n';
+    if (this.config.exports) {
+       this.output = 'module.exports = ';
+    } else if (this.config.group){
+    } else {
+      if (this.config.createClass) {
+        if (this.config.outputClassName) {
+          this.output = 'var ' + this.config.outputClassName + ' = React.createClass({\n';
+        } else {
+          this.output = 'React.createClass({\n';
+        }
+        this.output += this.config.indent + 'render: function() {' + "\n";
+        this.output += this.config.indent + this.config.indent + 'return (\n';
       }
-      this.output += this.config.indent + 'render: function() {' + "\n";
-      this.output += this.config.indent + this.config.indent + 'return (\n';
     }
 
     if (this._onlyOneTopLevel(containerEl)) {
@@ -224,6 +229,8 @@ HTMLtoJSX.prototype = {
       this.output += this.config.indent + this.config.indent + ');\n';
       this.output += this.config.indent + '}\n';
       this.output += '});';
+    } else if (this.config.exports) {
+        this.output += ';';
     } else {
       this.output = this._removeJSXClassIndention(this.output, this.config.indent);
     }
