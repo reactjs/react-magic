@@ -487,7 +487,7 @@ HTMLtoJSX.prototype = {
         if (isNumeric(attribute.value)) {
           result += '={' + attribute.value + '}';
         } else if (attribute.value.length > 0) {
-          result += '="' + attribute.value.replace('"', '&quot;') + '"';
+          result += '="' + attribute.value.replace(/"/gm, '&quot;') + '"';
         }
         return result;
     }
