@@ -434,7 +434,7 @@ HTMLtoJSX.prototype = {
       return;
     }
 
-    var text = escapeSpecialChars(node.textContent)
+    var text = escapeSpecialChars(node.textContent);
 
     if (this._inPreTag) {
       // If this text is contained within a <pre>, we need to ensure the JSX
@@ -446,6 +446,11 @@ HTMLtoJSX.prototype = {
           return '{' + JSON.stringify(whitespace) + '}';
         });
     } else {
+      // Handle any curly braces.
+      text = text
+        .replace(/(\{|\})/g, function(brace) {
+            return '{\'' + brace + '\'}';
+        });
       // If there's a newline in the text, adjust the indent level
       if (text.indexOf('\n') > -1) {
         text = text.replace(/\n\s*/g, this._getIndentedNewline());
