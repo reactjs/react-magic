@@ -21,28 +21,52 @@ function getArgs() {
     .strict();
 
   var files = args.argv._;
-  if (!files || files.length === 0) {
-    console.error('Please provide a file name');
-    args.showHelp();
-    process.exit(1);
+  // if input coming from
+  if (process.stdin.isTTY){
+    if (!files || files.length === 0) {
+      console.error('Please provide a file name');
+      args.showHelp();
+      process.exit(1);
+    }
+    return args.argv;
   }
-  return args.argv;
+  else{
+    return args.argv;
+  }
 }
 
 function main() {
   var argv = getArgs();
-  fs.readFile(argv._[0], 'utf-8', function(err, input) {
-    if (err) {
-      console.error(err.stack);
-      process.exit(2);
-    }
-    var converter = new HTMLtoJSX({
-      createClass: !!argv.className,
-      outputClassName: argv.className
-    });
-    var output = converter.convert(input);
-    console.log(output);
+
+  var converter = new HTMLtoJSX({
+    createClass: !!argv.className,
+    outputClassName: argv.className
   });
+
+  if (process.stdin.isTTY){
+    fs.readFile(argv._[0], 'utf-8', function(err, input) {
+      if (err) {
+        console.error(err.stack);
+        process.exit(2);
+      }
+      var output = converter.convert(input);
+      console.log(output);
+    });
+  }
+  else{
+    var data = '';
+    process.stdin.resume()
+    process.stdin.setEncoding('utf8')
+    process.stdin.on('data', function(chunk){
+      data += chunk;
+    });
+
+    process.stdin.on('end', function(){
+      var output = converter.convert(data);
+      process.stdout.write(output);
+      process.exit();
+    });
+  }
 }
 
 main();
