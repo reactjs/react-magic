@@ -3,6 +3,8 @@
 
 var fs = require('fs');
 var HTMLtoJSX = require('./htmltojsx.js');
+
+var tidy = require('htmltidy').tidy;
 var yargs = require('yargs');
 
 function getArgs() {
@@ -22,17 +24,12 @@ function getArgs() {
 
   var files = args.argv._;
   // if input coming from
-  if (process.stdin.isTTY){
-    if (!files || files.length === 0) {
+  if (process.stdin.isTTY && (!files || files.length === 0)) {
       console.error('Please provide a file name');
       args.showHelp();
       process.exit(1);
-    }
-    return args.argv;
   }
-  else{
-    return args.argv;
-  }
+  return args.argv;
 }
 
 function main() {
@@ -49,8 +46,16 @@ function main() {
         console.error(err.stack);
         process.exit(2);
       }
-      var output = converter.convert(input);
-      console.log(output);
+      tidy(input, function(err, html){
+        if (err) {
+          console.error(err.stack);
+          process.exit(2);
+        }
+
+        var output = converter.convert(html);
+        console.log(output);
+        process.exit();
+      });
     });
   }
   else{
@@ -62,9 +67,16 @@ function main() {
     });
 
     process.stdin.on('end', function(){
-      var output = converter.convert(data);
-      process.stdout.write(output);
-      process.exit();
+      tidy(data, function(err, html){
+        if (err) {
+          console.error(err.stack);
+          process.exit(2);
+        }
+
+        var output = converter.convert(html);
+        console.log(output);
+        process.exit();
+      })
     });
   }
 }

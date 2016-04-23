@@ -5,9 +5,10 @@
   "main": "src/htmltojsx.js",
   "bin": "src/cli.js",
   "dependencies": {
+    "htmltidy": "0.0.6",
+    "jsdom-no-contextify": "~3.1.0",
     "react": "~0.14.6",
-    "yargs": "~4.6.0",
-    "jsdom-no-contextify": "~3.1.0"
+    "yargs": "~4.6.0"
   },
   "devDependencies": {
     "gulp": "~3.9.0",
