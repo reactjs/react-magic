@@ -10,15 +10,18 @@
     "jsdom-no-contextify": "~3.1.0"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "del": "~2.2.0",
     "gulp": "~3.9.0",
-    "webpack": "~1.13.0",
-    "gulp-webpack": "~1.5.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-gh-pages": "~0.5.4",
+    "gulp-livereload": "~3.8.1",
     "gulp-rename": "~1.2.0",
     "gulp-uglify": "~1.5.1",
-    "gulp-gh-pages": "~0.5.4",
+    "gulp-webpack": "~1.5.0",
     "merge-stream": "~1.0.0",
-    "del": "~2.2.0",
-    "gulp-livereload": "~3.8.1"
+    "webpack": "~1.13.0"
   },
   "repository": {
     "type": "git",
