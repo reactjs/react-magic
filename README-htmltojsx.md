@@ -43,11 +43,15 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.2.6 - 28th November 2016
+--------------------------
+ - [#55](https://github.com/reactjs/react-magic/pull/55) - Handle braces in text. *Thanks to [Solar Olugebefola](https://github.com/solugebefola)*
+ - [#49](https://github.com/reactjs/react-magic/pull/49) - Fix quotation mark replacement. *Thanks to [Geoffrey Challen](https://github.com/gchallen)*
+
 0.2.5 - 26th October 2015
 -------------------------
  - [#33](https://github.com/reactjs/react-magic/issues/33) - Correctly handle `<textarea>`s and `<pre>`s
  - [#35](https://github.com/reactjs/react-magic/issues/35) - Handle internal stylesheets (`<style>` tags). *Thanks to [Trevor Copeland](https://github.com/sickslives)*
-
 
 0.2.4 - 6th August 2015
 -----------------------
