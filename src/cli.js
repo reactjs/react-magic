@@ -13,6 +13,10 @@ function getArgs() {
     )
     .describe('className', 'Create a React component (wraps JSX in React.createClass call)')
     .alias('className', 'c')
+    .boolean('e')
+    .describe('e', 'Decide whether to wrap in module.exports')
+    .boolean('g')
+    .describe('g', 'Decide whether to format for grouping with other jsx files(i.e. no wrapper)')
     .help('help')
     .example(
       '$0 -c AwesomeComponent awesome.htm',
@@ -38,7 +42,9 @@ function main() {
     }
     var converter = new HTMLtoJSX({
       createClass: !!argv.className,
-      outputClassName: argv.className
+      outputClassName: argv.className,
+      exports: argv.e && !argv.g,
+      group: argv.g && !argv.e
     });
     var output = converter.convert(input);
     console.log(output);
