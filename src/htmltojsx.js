@@ -224,6 +224,8 @@ HTMLtoJSX.prototype = {
       this.output += this.config.indent + this.config.indent + ');\n';
       this.output += this.config.indent + '}\n';
       this.output += '});';
+    } else {
+      this.output = this._removeJSXClassIndention(this.output, this.config.indent);
     }
     return this.output;
   },
@@ -507,6 +509,19 @@ HTMLtoJSX.prototype = {
   _getStyleAttribute: function(styles) {
     var jsxStyles = new StyleParser(styles).toJSXString();
     return 'style={{' + jsxStyles + '}}';
+  },
+
+  /**
+   * Removes class-level indention in the JSX output. To be used when the JSX
+   * output is configured to not contain a class deifinition.
+   *
+   * @param {string} output JSX output with class-level indention
+   * @param {string} indent Configured indention
+   * @return {string} JSX output wihtout class-level indention
+   */
+  _removeJSXClassIndention: function(output, indent) {
+    var classIndention = new RegExp('\\n' + indent + indent + indent,  'g');
+    return output.replace(classIndention, '\n');
   }
 };
 
