@@ -185,6 +185,7 @@ HTMLtoJSX.prototype = {
     this.output = '';
     this.level = 0;
     this._inPreTag = false;
+    this._inCodeTag = false;
   },
   /**
    * Main entry point to the converter. Given the specified HTML, returns a
@@ -379,6 +380,9 @@ HTMLtoJSX.prototype = {
     if (tagName === 'pre') {
       this._inPreTag = true;
     }
+    if (tagName === 'code') {
+      this._inCodeTag = true;
+    }
 
     this.output += '<' + tagName;
     if (attributes.length > 0) {
@@ -407,6 +411,9 @@ HTMLtoJSX.prototype = {
 
     if (tagName === 'pre') {
       this._inPreTag = false;
+    }
+    if (tagName === 'code') {
+      this._inCodeTag = false;
     }
   },
 
@@ -457,6 +464,13 @@ HTMLtoJSX.prototype = {
       if (text.indexOf('\n') > -1) {
         text = text.replace(/\n\s*/g, this._getIndentedNewline());
       }
+    }
+    if (this._inCodeTag && !this._inPreTag) {
+        text = text
+          .replace(/\'/g, "\"")
+          .replace(/(\{|\})/g, function(brace) {
+              return '{\'' + brace + '\'}';
+          });
     }
     this.output += text;
   },
