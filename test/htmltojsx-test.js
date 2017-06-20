@@ -232,6 +232,12 @@ describe('htmltojsx', function() {
         expect(converter.convert('<input type="checkbox" checked>').trim())
           .toBe('<input type="checkbox" defaultChecked />');
     });
+
+    it('should convert SVG attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" fill-rule="evenodd"/></svg>').trim())
+          .toBe('<svg height={100} width={100}><circle cx={50} cy={50} r={40} stroke="black" strokeWidth={3} fill="red" fillRule="evenodd" /></svg>');
+    });
   });
 
   describe('special tags', function() {
