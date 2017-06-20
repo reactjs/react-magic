@@ -37,6 +37,21 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
 
 var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
 
+/**
+ * Iterates over elements of object invokes iteratee for each element
+ *
+ * @param {object}   obj        Collection object
+ * @param {function} iteratee   Callback function called in iterative processing
+ * @param {any}      context    This arg (aka Context)
+ */
+function eachObj(obj, iteratee, context) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      iteratee.call(context || obj, key, obj[key]);
+    }
+  }
+}
+
 // Populate property map with ReactJS's attribute and property mappings
 // TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
 for (var propname in HTMLDOMPropertyConfig.Properties) {
@@ -562,12 +577,9 @@ StyleParser.prototype = {
    */
   toJSXString: function() {
     var output = [];
-    for (var key in this.styles) {
-      if (!this.styles.hasOwnProperty(key)) {
-        continue;
-      }
-      output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(this.styles[key]));
-    }
+    eachObj(this.styles, function(key, value) {
+      output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(value));
+    }, this);
     return output.join(', ');
   },
 
