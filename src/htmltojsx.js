@@ -36,6 +36,7 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
 };
 
 var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
+var SVGDOMPropertyConfig = require('react-dom/lib/SVGDOMPropertyConfig');
 
 /**
  * Iterates over elements of object invokes iteratee for each element
@@ -54,16 +55,17 @@ function eachObj(obj, iteratee, context) {
 
 // Populate property map with ReactJS's attribute and property mappings
 // TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
-for (var propname in HTMLDOMPropertyConfig.Properties) {
-  if (!HTMLDOMPropertyConfig.Properties.hasOwnProperty(propname)) {
-    continue;
-  }
+function mappingAttributesFromReactConfig(config) {
+  eachObj(config.Properties, function(propname) {
+    var mapFrom = config.DOMAttributeNames[propname] || propname.toLowerCase();
 
-  var mapFrom = HTMLDOMPropertyConfig.DOMAttributeNames[propname] || propname.toLowerCase();
-
-  if (!ATTRIBUTE_MAPPING[mapFrom])
-    ATTRIBUTE_MAPPING[mapFrom] = propname;
+    if (!ATTRIBUTE_MAPPING[mapFrom])
+      ATTRIBUTE_MAPPING[mapFrom] = propname;
+  });
 }
+
+mappingAttributesFromReactConfig(HTMLDOMPropertyConfig);
+mappingAttributesFromReactConfig(SVGDOMPropertyConfig);
 
 /**
  * Repeats a string a certain number of times.
