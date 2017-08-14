@@ -267,5 +267,11 @@ describe('htmltojsx', function() {
       expect(converter.convert('<style>\nh1 {\n    background: url(\'http://foo.bar/img.jpg\';\n}\n</style>').trim())
         .toBe('<style dangerouslySetInnerHTML={{__html: "\\nh1 {\\n    background: url(\'http://foo.bar/img.jpg\';\\n}\\n" }} />');
     });
+
+    it('should convert svg tag names', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<svg><clipPath><feSpotLight><linearGradient></linearGradient></feSpotLight></clipPath></svg>').trim())
+        .toBe('<svg><clipPath><feSpotLight><linearGradient /></feSpotLight></clipPath></svg>');
+    });
   });
 });
