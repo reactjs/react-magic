@@ -35,6 +35,104 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
   }
 };
 
+// Reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Element#SVG_elements
+var ELEMENT_TAG_NAME_MAPPING = {
+  a: 'a',
+  altglyph: 'altGlyph',
+  altglyphdef: 'altGlyphDef',
+  altglyphitem: 'altGlyphItem',
+  animate: 'animate',
+  animatecolor: 'animateColor',
+  animatemotion: 'animateMotion',
+  animatetransform: 'animateTransform',
+  audio: 'audio',
+  canvas: 'canvas',
+  circle: 'circle',
+  clippath: 'clipPath',
+  color-profile: 'color',
+  cursor: 'cursor',
+  defs: 'defs',
+  desc: 'desc',
+  discard: 'discard',
+  ellipse: 'ellipse',
+  feblend: 'feBlend',
+  fecolormatrix: 'feColorMatrix',
+  fecomponenttransfer: 'feComponentTransfer',
+  fecomposite: 'feComposite',
+  feconvolvematrix: 'feConvolveMatrix',
+  fediffuselighting: 'feDiffuseLighting',
+  fedisplacementmap: 'feDisplacementMap',
+  fedistantlight: 'feDistantLight',
+  fedropshadow: 'feDropShadow',
+  feflood: 'feFlood',
+  fefunca: 'feFuncA',
+  fefuncb: 'feFuncB',
+  fefuncg: 'feFuncG',
+  fefuncr: 'feFuncR',
+  fegaussianblur: 'feGaussianBlur',
+  feimage: 'feImage',
+  femerge: 'feMerge',
+  femergenode: 'feMergeNode',
+  femorphology: 'feMorphology',
+  feoffset: 'feOffset',
+  fepointlight: 'fePointLight',
+  fespecularlighting: 'feSpecularLighting',
+  fespotlight: 'feSpotLight',
+  fetile: 'feTile',
+  feturbulence: 'feTurbulence',
+  filter: 'filter',
+  font: 'font',
+  font-face: 'font',
+  font-face-format: 'font',
+  font-face-name: 'font',
+  font-face-src: 'font',
+  font-face-uri: 'font',
+  foreignobject: 'foreignObject',
+  g: 'g',
+  glyph: 'glyph',
+  glyphref: 'glyphRef',
+  hatch: 'hatch',
+  hatchpath: 'hatchpath',
+  hkern: 'hkern',
+  iframe: 'iframe',
+  image: 'image',
+  line: 'line',
+  lineargradient: 'linearGradient',
+  marker: 'marker',
+  mask: 'mask',
+  mesh: 'mesh',
+  meshgradient: 'meshgradient',
+  meshpatch: 'meshpatch',
+  meshrow: 'meshrow',
+  metadata: 'metadata',
+  missing-glyph: 'missing',
+  mpath: 'mpath',
+  path: 'path',
+  pattern: 'pattern',
+  polygon: 'polygon',
+  polyline: 'polyline',
+  radialgradient: 'radialGradient',
+  rect: 'rect',
+  script: 'script',
+  set: 'set',
+  solidcolor: 'solidcolor',
+  stop: 'stop',
+  style: 'style',
+  svg: 'svg',
+  switch: 'switch',
+  symbol: 'symbol',
+  text: 'text',
+  textpath: 'textPath',
+  title: 'title',
+  tref: 'tref',
+  tspan: 'tspan',
+  unknown: 'unknown',
+  use: 'use',
+  video: 'video',
+  view: 'view',
+  vkern: 'vkern'
+};
+
 var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
 var SVGDOMPropertyConfig = require('react-dom/lib/SVGDOMPropertyConfig');
 
@@ -66,6 +164,22 @@ function mappingAttributesFromReactConfig(config) {
 
 mappingAttributesFromReactConfig(HTMLDOMPropertyConfig);
 mappingAttributesFromReactConfig(SVGDOMPropertyConfig);
+
+/**
+ * Convert tag name to tag name suitable for JSX.
+ *
+ * @param  {string} tagName  String of tag name
+ * @return {string}
+ */
+function jsxTagName(tagName) {
+  var name = tagName.toLowerCase();
+
+  if (ELEMENT_TAG_NAME_MAPPING.hasOwnProperty(name)) {
+    name = ELEMENT_TAG_NAME_MAPPING[name];
+  }
+
+  return name;
+}
 
 /**
  * Repeats a string a certain number of times.
@@ -379,7 +493,7 @@ HTMLtoJSX.prototype = {
    * @param {DOMElement} node
    */
   _beginVisitElement: function(node) {
-    var tagName = node.tagName.toLowerCase();
+    var tagName = jsxTagName(node.tagName);
     var attributes = [];
     for (var i = 0, count = node.attributes.length; i < count; i++) {
       attributes.push(this._getElementAttribute(node, node.attributes[i]));
@@ -412,14 +526,14 @@ HTMLtoJSX.prototype = {
    * @param {Node} node
    */
   _endVisitElement: function(node) {
-    var tagName = node.tagName.toLowerCase();
+    var tagName = jsxTagName(node.tagName);
     // De-indent a bit
     // TODO: It's inefficient to do it this way :/
     this.output = trimEnd(this.output, this.config.indent);
     if (this._isSelfClosing(node)) {
       this.output += ' />';
     } else {
-      this.output += '</' + node.tagName.toLowerCase() + '>';
+      this.output += '</' + tagName + '>';
     }
 
     if (tagName === 'pre') {
@@ -435,9 +549,10 @@ HTMLtoJSX.prototype = {
    * @return {boolean}
    */
   _isSelfClosing: function(node) {
+    var tagName = jsxTagName(node.tagName);
     // If it has children, it's not self-closing
     // Exception: All children of a textarea are moved to a "defaultValue" attribute, style attributes are dangerously set.
-    return !node.firstChild || node.tagName.toLowerCase() === 'textarea' || node.tagName.toLowerCase() === 'style';
+    return !node.firstChild || tagName === 'textarea' || tagName === 'style';
   },
 
   /**
@@ -446,7 +561,7 @@ HTMLtoJSX.prototype = {
    * @param {TextNode} node
    */
   _visitText: function(node) {
-    var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
+    var parentTag = node.parentNode && jsxTagName(node.parentNode.tagName);
     if (parentTag === 'textarea' || parentTag === 'style') {
       // Ignore text content of textareas and styles, as it will have already been moved
       // to a "defaultValue" attribute and "dangerouslySetInnerHTML" attribute respectively.
@@ -499,7 +614,7 @@ HTMLtoJSX.prototype = {
       case 'style':
         return this._getStyleAttribute(attribute.value);
       default:
-        var tagName = node.tagName.toLowerCase();
+        var tagName = jsxTagName(node.tagName);
         var name =
           (ELEMENT_ATTRIBUTE_MAPPING[tagName] &&
             ELEMENT_ATTRIBUTE_MAPPING[tagName][attribute.name]) ||
