@@ -43,6 +43,11 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.3.0 - 4th September 2017
+--------------------------
+ - [#97](https://github.com/reactjs/react-magic/pull/97) - Update to React 15
+ - [#100](https://github.com/reactjs/react-magic/pull/100) - Remove JSX class-level indention when transforming HTML into JSX
+ - [#136](https://github.com/reactjs/react-magic/pull/136) and [#138](https://github.com/reactjs/react-magic/pull/138) - Handle SVG attributes
 0.2.6 - 28th November 2016
 --------------------------
  - [#55](https://github.com/reactjs/react-magic/pull/55) - Handle braces in text. *Thanks to [Solar Olugebefola](https://github.com/solugebefola)*
