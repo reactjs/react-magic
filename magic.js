@@ -320,19 +320,150 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 
+	// Reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Element#SVG_elements
+	var ELEMENT_TAG_NAME_MAPPING = {
+	  a: 'a',
+	  altglyph: 'altGlyph',
+	  altglyphdef: 'altGlyphDef',
+	  altglyphitem: 'altGlyphItem',
+	  animate: 'animate',
+	  animatecolor: 'animateColor',
+	  animatemotion: 'animateMotion',
+	  animatetransform: 'animateTransform',
+	  audio: 'audio',
+	  canvas: 'canvas',
+	  circle: 'circle',
+	  clippath: 'clipPath',
+	  'color-profile': 'colorProfile',
+	  cursor: 'cursor',
+	  defs: 'defs',
+	  desc: 'desc',
+	  discard: 'discard',
+	  ellipse: 'ellipse',
+	  feblend: 'feBlend',
+	  fecolormatrix: 'feColorMatrix',
+	  fecomponenttransfer: 'feComponentTransfer',
+	  fecomposite: 'feComposite',
+	  feconvolvematrix: 'feConvolveMatrix',
+	  fediffuselighting: 'feDiffuseLighting',
+	  fedisplacementmap: 'feDisplacementMap',
+	  fedistantlight: 'feDistantLight',
+	  fedropshadow: 'feDropShadow',
+	  feflood: 'feFlood',
+	  fefunca: 'feFuncA',
+	  fefuncb: 'feFuncB',
+	  fefuncg: 'feFuncG',
+	  fefuncr: 'feFuncR',
+	  fegaussianblur: 'feGaussianBlur',
+	  feimage: 'feImage',
+	  femerge: 'feMerge',
+	  femergenode: 'feMergeNode',
+	  femorphology: 'feMorphology',
+	  feoffset: 'feOffset',
+	  fepointlight: 'fePointLight',
+	  fespecularlighting: 'feSpecularLighting',
+	  fespotlight: 'feSpotLight',
+	  fetile: 'feTile',
+	  feturbulence: 'feTurbulence',
+	  filter: 'filter',
+	  font: 'font',
+	  'font-face': 'fontFace',
+	  'font-face-format': 'fontFaceFormat',
+	  'font-face-name': 'fontFaceName',
+	  'font-face-src': 'fontFaceSrc',
+	  'font-face-uri': 'fontFaceUri',
+	  foreignobject: 'foreignObject',
+	  g: 'g',
+	  glyph: 'glyph',
+	  glyphref: 'glyphRef',
+	  hatch: 'hatch',
+	  hatchpath: 'hatchpath',
+	  hkern: 'hkern',
+	  iframe: 'iframe',
+	  image: 'image',
+	  line: 'line',
+	  lineargradient: 'linearGradient',
+	  marker: 'marker',
+	  mask: 'mask',
+	  mesh: 'mesh',
+	  meshgradient: 'meshgradient',
+	  meshpatch: 'meshpatch',
+	  meshrow: 'meshrow',
+	  metadata: 'metadata',
+	  'missing-glyph': 'missingGlyph',
+	  mpath: 'mpath',
+	  path: 'path',
+	  pattern: 'pattern',
+	  polygon: 'polygon',
+	  polyline: 'polyline',
+	  radialgradient: 'radialGradient',
+	  rect: 'rect',
+	  script: 'script',
+	  set: 'set',
+	  solidcolor: 'solidcolor',
+	  stop: 'stop',
+	  style: 'style',
+	  svg: 'svg',
+	  switch: 'switch',
+	  symbol: 'symbol',
+	  text: 'text',
+	  textpath: 'textPath',
+	  title: 'title',
+	  tref: 'tref',
+	  tspan: 'tspan',
+	  unknown: 'unknown',
+	  use: 'use',
+	  video: 'video',
+	  view: 'view',
+	  vkern: 'vkern'
+	};
+
 	var HTMLDOMPropertyConfig = __webpack_require__(2);
+	var SVGDOMPropertyConfig = __webpack_require__(6);
+
+	/**
+	 * Iterates over elements of object invokes iteratee for each element
+	 *
+	 * @param {object}   obj        Collection object
+	 * @param {function} iteratee   Callback function called in iterative processing
+	 * @param {any}      context    This arg (aka Context)
+	 */
+	function eachObj(obj, iteratee, context) {
+	  for (var key in obj) {
+	    if (obj.hasOwnProperty(key)) {
+	      iteratee.call(context || obj, key, obj[key]);
+	    }
+	  }
+	}
 
 	// Populate property map with ReactJS's attribute and property mappings
 	// TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr
-	for (var propname in HTMLDOMPropertyConfig.Properties) {
-	  if (!HTMLDOMPropertyConfig.Properties.hasOwnProperty(propname)) {
-	    continue;
+	function mappingAttributesFromReactConfig(config) {
+	  eachObj(config.Properties, function(propname) {
+	    var mapFrom = config.DOMAttributeNames[propname] || propname.toLowerCase();
+
+	    if (!ATTRIBUTE_MAPPING[mapFrom])
+	      ATTRIBUTE_MAPPING[mapFrom] = propname;
+	  });
+	}
+
+	mappingAttributesFromReactConfig(HTMLDOMPropertyConfig);
+	mappingAttributesFromReactConfig(SVGDOMPropertyConfig);
+
+	/**
+	 * Convert tag name to tag name suitable for JSX.
+	 *
+	 * @param  {string} tagName  String of tag name
+	 * @return {string}
+	 */
+	function jsxTagName(tagName) {
+	  var name = tagName.toLowerCase();
+
+	  if (ELEMENT_TAG_NAME_MAPPING.hasOwnProperty(name)) {
+	    name = ELEMENT_TAG_NAME_MAPPING[name];
 	  }
 
-	  var mapFrom = HTMLDOMPropertyConfig.DOMAttributeNames[propname] || propname.toLowerCase();
-
-	  if (!ATTRIBUTE_MAPPING[mapFrom])
-	    ATTRIBUTE_MAPPING[mapFrom] = propname;
+	  return name;
 	}
 
 	/**
@@ -509,6 +640,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.output += this.config.indent + this.config.indent + ');\n';
 	      this.output += this.config.indent + '}\n';
 	      this.output += '});';
+	    } else {
+	      this.output = this._removeJSXClassIndention(this.output, this.config.indent);
 	    }
 	    return this.output;
 	  },
@@ -645,7 +778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {DOMElement} node
 	   */
 	  _beginVisitElement: function(node) {
-	    var tagName = node.tagName.toLowerCase();
+	    var tagName = jsxTagName(node.tagName);
 	    var attributes = [];
 	    for (var i = 0, count = node.attributes.length; i < count; i++) {
 	      attributes.push(this._getElementAttribute(node, node.attributes[i]));
@@ -678,14 +811,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Node} node
 	   */
 	  _endVisitElement: function(node) {
-	    var tagName = node.tagName.toLowerCase();
+	    var tagName = jsxTagName(node.tagName);
 	    // De-indent a bit
 	    // TODO: It's inefficient to do it this way :/
 	    this.output = trimEnd(this.output, this.config.indent);
 	    if (this._isSelfClosing(node)) {
 	      this.output += ' />';
 	    } else {
-	      this.output += '</' + node.tagName.toLowerCase() + '>';
+	      this.output += '</' + tagName + '>';
 	    }
 
 	    if (tagName === 'pre') {
@@ -701,9 +834,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {boolean}
 	   */
 	  _isSelfClosing: function(node) {
+	    var tagName = jsxTagName(node.tagName);
 	    // If it has children, it's not self-closing
 	    // Exception: All children of a textarea are moved to a "defaultValue" attribute, style attributes are dangerously set.
-	    return !node.firstChild || node.tagName.toLowerCase() === 'textarea' || node.tagName.toLowerCase() === 'style';
+	    return !node.firstChild || tagName === 'textarea' || tagName === 'style';
 	  },
 
 	  /**
@@ -712,7 +846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {TextNode} node
 	   */
 	  _visitText: function(node) {
-	    var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
+	    var parentTag = node.parentNode && jsxTagName(node.parentNode.tagName);
 	    if (parentTag === 'textarea' || parentTag === 'style') {
 	      // Ignore text content of textareas and styles, as it will have already been moved
 	      // to a "defaultValue" attribute and "dangerouslySetInnerHTML" attribute respectively.
@@ -765,7 +899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      case 'style':
 	        return this._getStyleAttribute(attribute.value);
 	      default:
-	        var tagName = node.tagName.toLowerCase();
+	        var tagName = jsxTagName(node.tagName);
 	        var name =
 	          (ELEMENT_ATTRIBUTE_MAPPING[tagName] &&
 	            ELEMENT_ATTRIBUTE_MAPPING[tagName][attribute.name]) ||
@@ -792,6 +926,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _getStyleAttribute: function(styles) {
 	    var jsxStyles = new StyleParser(styles).toJSXString();
 	    return 'style={{' + jsxStyles + '}}';
+	  },
+
+	  /**
+	   * Removes class-level indention in the JSX output. To be used when the JSX
+	   * output is configured to not contain a class deifinition.
+	   *
+	   * @param {string} output JSX output with class-level indention
+	   * @param {string} indent Configured indention
+	   * @return {string} JSX output wihtout class-level indention
+	   */
+	  _removeJSXClassIndention: function(output, indent) {
+	    var classIndention = new RegExp('\\n' + indent + indent + indent,  'g');
+	    return output.replace(classIndention, '\n');
 	  }
 	};
 
@@ -832,12 +979,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  toJSXString: function() {
 	    var output = [];
-	    for (var key in this.styles) {
-	      if (!this.styles.hasOwnProperty(key)) {
-	        continue;
-	      }
-	      output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(this.styles[key]));
-	    }
+	    eachObj(this.styles, function(key, value) {
+	      output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(value));
+	    }, this);
 	    return output.join(', ');
 	  },
 
@@ -883,211 +1027,205 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule HTMLDOMPropertyConfig
 	 */
 
 	'use strict';
 
 	var DOMProperty = __webpack_require__(3);
-	var ExecutionEnvironment = __webpack_require__(5);
 
-	var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
 	var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 	var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
-	var HAS_SIDE_EFFECTS = DOMProperty.injection.HAS_SIDE_EFFECTS;
 	var HAS_NUMERIC_VALUE = DOMProperty.injection.HAS_NUMERIC_VALUE;
 	var HAS_POSITIVE_NUMERIC_VALUE = DOMProperty.injection.HAS_POSITIVE_NUMERIC_VALUE;
 	var HAS_OVERLOADED_BOOLEAN_VALUE = DOMProperty.injection.HAS_OVERLOADED_BOOLEAN_VALUE;
 
-	var hasSVG;
-	if (ExecutionEnvironment.canUseDOM) {
-	  var implementation = document.implementation;
-	  hasSVG = implementation && implementation.hasFeature && implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1');
-	}
-
 	var HTMLDOMPropertyConfig = {
-	  isCustomAttribute: RegExp.prototype.test.bind(/^(data|aria)-[a-z_][a-z\d_.\-]*$/),
+	  isCustomAttribute: RegExp.prototype.test.bind(new RegExp('^(data|aria)-[' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$')),
 	  Properties: {
 	    /**
 	     * Standard Properties
 	     */
-	    accept: null,
-	    acceptCharset: null,
-	    accessKey: null,
-	    action: null,
-	    allowFullScreen: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-	    allowTransparency: MUST_USE_ATTRIBUTE,
-	    alt: null,
+	    accept: 0,
+	    acceptCharset: 0,
+	    accessKey: 0,
+	    action: 0,
+	    allowFullScreen: HAS_BOOLEAN_VALUE,
+	    allowTransparency: 0,
+	    alt: 0,
+	    // specifies target context for links with `preload` type
+	    as: 0,
 	    async: HAS_BOOLEAN_VALUE,
-	    autoComplete: null,
+	    autoComplete: 0,
 	    // autoFocus is polyfilled/normalized by AutoFocusUtils
 	    // autoFocus: HAS_BOOLEAN_VALUE,
 	    autoPlay: HAS_BOOLEAN_VALUE,
-	    capture: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-	    cellPadding: null,
-	    cellSpacing: null,
-	    charSet: MUST_USE_ATTRIBUTE,
-	    challenge: MUST_USE_ATTRIBUTE,
+	    capture: HAS_BOOLEAN_VALUE,
+	    cellPadding: 0,
+	    cellSpacing: 0,
+	    charSet: 0,
+	    challenge: 0,
 	    checked: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    classID: MUST_USE_ATTRIBUTE,
-	    // To set className on SVG elements, it's necessary to use .setAttribute;
-	    // this works on HTML elements too in all browsers except IE8. Conveniently,
-	    // IE8 doesn't support SVG and so we can simply use the attribute in
-	    // browsers that support SVG and the property in browsers that don't,
-	    // regardless of whether the element is HTML or SVG.
-	    className: hasSVG ? MUST_USE_ATTRIBUTE : MUST_USE_PROPERTY,
-	    cols: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
-	    colSpan: null,
-	    content: null,
-	    contentEditable: null,
-	    contextMenu: MUST_USE_ATTRIBUTE,
-	    controls: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    coords: null,
-	    crossOrigin: null,
-	    data: null, // For `<object />` acts as `src`.
-	    dateTime: MUST_USE_ATTRIBUTE,
+	    cite: 0,
+	    classID: 0,
+	    className: 0,
+	    cols: HAS_POSITIVE_NUMERIC_VALUE,
+	    colSpan: 0,
+	    content: 0,
+	    contentEditable: 0,
+	    contextMenu: 0,
+	    controls: HAS_BOOLEAN_VALUE,
+	    coords: 0,
+	    crossOrigin: 0,
+	    data: 0, // For `<object />` acts as `src`.
+	    dateTime: 0,
 	    'default': HAS_BOOLEAN_VALUE,
 	    defer: HAS_BOOLEAN_VALUE,
-	    dir: null,
-	    disabled: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	    dir: 0,
+	    disabled: HAS_BOOLEAN_VALUE,
 	    download: HAS_OVERLOADED_BOOLEAN_VALUE,
-	    draggable: null,
-	    encType: null,
-	    form: MUST_USE_ATTRIBUTE,
-	    formAction: MUST_USE_ATTRIBUTE,
-	    formEncType: MUST_USE_ATTRIBUTE,
-	    formMethod: MUST_USE_ATTRIBUTE,
+	    draggable: 0,
+	    encType: 0,
+	    form: 0,
+	    formAction: 0,
+	    formEncType: 0,
+	    formMethod: 0,
 	    formNoValidate: HAS_BOOLEAN_VALUE,
-	    formTarget: MUST_USE_ATTRIBUTE,
-	    frameBorder: MUST_USE_ATTRIBUTE,
-	    headers: null,
-	    height: MUST_USE_ATTRIBUTE,
-	    hidden: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-	    high: null,
-	    href: null,
-	    hrefLang: null,
-	    htmlFor: null,
-	    httpEquiv: null,
-	    icon: null,
-	    id: MUST_USE_PROPERTY,
-	    inputMode: MUST_USE_ATTRIBUTE,
-	    integrity: null,
-	    is: MUST_USE_ATTRIBUTE,
-	    keyParams: MUST_USE_ATTRIBUTE,
-	    keyType: MUST_USE_ATTRIBUTE,
-	    kind: null,
-	    label: null,
-	    lang: null,
-	    list: MUST_USE_ATTRIBUTE,
-	    loop: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    low: null,
-	    manifest: MUST_USE_ATTRIBUTE,
-	    marginHeight: null,
-	    marginWidth: null,
-	    max: null,
-	    maxLength: MUST_USE_ATTRIBUTE,
-	    media: MUST_USE_ATTRIBUTE,
-	    mediaGroup: null,
-	    method: null,
-	    min: null,
-	    minLength: MUST_USE_ATTRIBUTE,
+	    formTarget: 0,
+	    frameBorder: 0,
+	    headers: 0,
+	    height: 0,
+	    hidden: HAS_BOOLEAN_VALUE,
+	    high: 0,
+	    href: 0,
+	    hrefLang: 0,
+	    htmlFor: 0,
+	    httpEquiv: 0,
+	    icon: 0,
+	    id: 0,
+	    inputMode: 0,
+	    integrity: 0,
+	    is: 0,
+	    keyParams: 0,
+	    keyType: 0,
+	    kind: 0,
+	    label: 0,
+	    lang: 0,
+	    list: 0,
+	    loop: HAS_BOOLEAN_VALUE,
+	    low: 0,
+	    manifest: 0,
+	    marginHeight: 0,
+	    marginWidth: 0,
+	    max: 0,
+	    maxLength: 0,
+	    media: 0,
+	    mediaGroup: 0,
+	    method: 0,
+	    min: 0,
+	    minLength: 0,
+	    // Caution; `option.selected` is not updated if `select.multiple` is
+	    // disabled with `removeAttribute`.
 	    multiple: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
 	    muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    name: null,
-	    nonce: MUST_USE_ATTRIBUTE,
+	    name: 0,
+	    nonce: 0,
 	    noValidate: HAS_BOOLEAN_VALUE,
 	    open: HAS_BOOLEAN_VALUE,
-	    optimum: null,
-	    pattern: null,
-	    placeholder: null,
-	    poster: null,
-	    preload: null,
-	    radioGroup: null,
-	    readOnly: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    rel: null,
+	    optimum: 0,
+	    pattern: 0,
+	    placeholder: 0,
+	    playsInline: HAS_BOOLEAN_VALUE,
+	    poster: 0,
+	    preload: 0,
+	    profile: 0,
+	    radioGroup: 0,
+	    readOnly: HAS_BOOLEAN_VALUE,
+	    referrerPolicy: 0,
+	    rel: 0,
 	    required: HAS_BOOLEAN_VALUE,
 	    reversed: HAS_BOOLEAN_VALUE,
-	    role: MUST_USE_ATTRIBUTE,
-	    rows: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
-	    rowSpan: null,
-	    sandbox: null,
-	    scope: null,
+	    role: 0,
+	    rows: HAS_POSITIVE_NUMERIC_VALUE,
+	    rowSpan: HAS_NUMERIC_VALUE,
+	    sandbox: 0,
+	    scope: 0,
 	    scoped: HAS_BOOLEAN_VALUE,
-	    scrolling: null,
-	    seamless: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
+	    scrolling: 0,
+	    seamless: HAS_BOOLEAN_VALUE,
 	    selected: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
-	    shape: null,
-	    size: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
-	    sizes: MUST_USE_ATTRIBUTE,
+	    shape: 0,
+	    size: HAS_POSITIVE_NUMERIC_VALUE,
+	    sizes: 0,
 	    span: HAS_POSITIVE_NUMERIC_VALUE,
-	    spellCheck: null,
-	    src: null,
-	    srcDoc: MUST_USE_PROPERTY,
-	    srcLang: null,
-	    srcSet: MUST_USE_ATTRIBUTE,
+	    spellCheck: 0,
+	    src: 0,
+	    srcDoc: 0,
+	    srcLang: 0,
+	    srcSet: 0,
 	    start: HAS_NUMERIC_VALUE,
-	    step: null,
-	    style: null,
-	    summary: null,
-	    tabIndex: null,
-	    target: null,
-	    title: null,
-	    type: null,
-	    useMap: null,
-	    value: MUST_USE_PROPERTY | HAS_SIDE_EFFECTS,
-	    width: MUST_USE_ATTRIBUTE,
-	    wmode: MUST_USE_ATTRIBUTE,
-	    wrap: null,
+	    step: 0,
+	    style: 0,
+	    summary: 0,
+	    tabIndex: 0,
+	    target: 0,
+	    title: 0,
+	    // Setting .type throws on non-<input> tags
+	    type: 0,
+	    useMap: 0,
+	    value: 0,
+	    width: 0,
+	    wmode: 0,
+	    wrap: 0,
 
 	    /**
 	     * RDFa Properties
 	     */
-	    about: MUST_USE_ATTRIBUTE,
-	    datatype: MUST_USE_ATTRIBUTE,
-	    inlist: MUST_USE_ATTRIBUTE,
-	    prefix: MUST_USE_ATTRIBUTE,
+	    about: 0,
+	    datatype: 0,
+	    inlist: 0,
+	    prefix: 0,
 	    // property is also supported for OpenGraph in meta tags.
-	    property: MUST_USE_ATTRIBUTE,
-	    resource: MUST_USE_ATTRIBUTE,
-	    'typeof': MUST_USE_ATTRIBUTE,
-	    vocab: MUST_USE_ATTRIBUTE,
+	    property: 0,
+	    resource: 0,
+	    'typeof': 0,
+	    vocab: 0,
 
 	    /**
 	     * Non-standard Properties
 	     */
 	    // autoCapitalize and autoCorrect are supported in Mobile Safari for
 	    // keyboard hints.
-	    autoCapitalize: MUST_USE_ATTRIBUTE,
-	    autoCorrect: MUST_USE_ATTRIBUTE,
+	    autoCapitalize: 0,
+	    autoCorrect: 0,
 	    // autoSave allows WebKit/Blink to persist values of input fields on page reloads
-	    autoSave: null,
+	    autoSave: 0,
 	    // color is for Safari mask-icon link
-	    color: null,
+	    color: 0,
 	    // itemProp, itemScope, itemType are for
 	    // Microdata support. See http://schema.org/docs/gs.html
-	    itemProp: MUST_USE_ATTRIBUTE,
-	    itemScope: MUST_USE_ATTRIBUTE | HAS_BOOLEAN_VALUE,
-	    itemType: MUST_USE_ATTRIBUTE,
+	    itemProp: 0,
+	    itemScope: HAS_BOOLEAN_VALUE,
+	    itemType: 0,
 	    // itemID and itemRef are for Microdata support as well but
-	    // only specified in the the WHATWG spec document. See
+	    // only specified in the WHATWG spec document. See
 	    // https://html.spec.whatwg.org/multipage/microdata.html#microdata-dom-api
-	    itemID: MUST_USE_ATTRIBUTE,
-	    itemRef: MUST_USE_ATTRIBUTE,
+	    itemID: 0,
+	    itemRef: 0,
 	    // results show looking glass icon and recent searches on input
 	    // search fields in WebKit/Blink
-	    results: null,
+	    results: 0,
 	    // IE-only attribute that specifies security restrictions on an iframe
 	    // as an alternative to the sandbox attribute on IE<10
-	    security: MUST_USE_ATTRIBUTE,
+	    security: 0,
 	    // IE-only attribute that controls focus behavior
-	    unselectable: MUST_USE_ATTRIBUTE
+	    unselectable: 0
 	  },
 	  DOMAttributeNames: {
 	    acceptCharset: 'accept-charset',
@@ -1095,20 +1233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    htmlFor: 'for',
 	    httpEquiv: 'http-equiv'
 	  },
-	  DOMPropertyNames: {
-	    autoComplete: 'autocomplete',
-	    autoFocus: 'autofocus',
-	    autoPlay: 'autoplay',
-	    autoSave: 'autosave',
-	    // `encoding` is equivalent to `enctype`, IE8 lacks an `enctype` setter.
-	    // http://www.w3.org/TR/html5/forms.html#dom-fs-encoding
-	    encType: 'encoding',
-	    hrefLang: 'hreflang',
-	    radioGroup: 'radiogroup',
-	    spellCheck: 'spellcheck',
-	    srcDoc: 'srcdoc',
-	    srcSet: 'srcset'
-	  }
+	  DOMPropertyNames: {}
 	};
 
 	module.exports = HTMLDOMPropertyConfig;
@@ -1118,20 +1243,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule DOMProperty
-	 * @typechecks static-only
 	 */
 
 	'use strict';
 
-	var invariant = __webpack_require__(4);
+	var _prodInvariant = __webpack_require__(4);
+
+	var invariant = __webpack_require__(5);
 
 	function checkMask(value, bitmask) {
 	  return (value & bitmask) === bitmask;
@@ -1142,13 +1267,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Mapping from normalized, camelcased property names to a configuration that
 	   * specifies how the associated DOM property should be accessed or rendered.
 	   */
-	  MUST_USE_ATTRIBUTE: 0x1,
-	  MUST_USE_PROPERTY: 0x2,
-	  HAS_SIDE_EFFECTS: 0x4,
-	  HAS_BOOLEAN_VALUE: 0x8,
-	  HAS_NUMERIC_VALUE: 0x10,
-	  HAS_POSITIVE_NUMERIC_VALUE: 0x20 | 0x10,
-	  HAS_OVERLOADED_BOOLEAN_VALUE: 0x40,
+	  MUST_USE_PROPERTY: 0x1,
+	  HAS_BOOLEAN_VALUE: 0x4,
+	  HAS_NUMERIC_VALUE: 0x8,
+	  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
+	  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
 
 	  /**
 	   * Inject some specialized knowledge about the DOM. This takes a config object
@@ -1191,7 +1314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    for (var propName in Properties) {
-	      !!DOMProperty.properties.hasOwnProperty(propName) ?  false ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property ' + '\'%s\' which has already been injected. You may be accidentally ' + 'injecting the same DOM property config twice, or you may be ' + 'injecting two configs that have conflicting property names.', propName) : invariant(false) : undefined;
+	      !!DOMProperty.properties.hasOwnProperty(propName) ?  false ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
 
 	      var lowerCased = propName.toLowerCase();
 	      var propConfig = Properties[propName];
@@ -1202,18 +1325,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        propertyName: propName,
 	        mutationMethod: null,
 
-	        mustUseAttribute: checkMask(propConfig, Injection.MUST_USE_ATTRIBUTE),
 	        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
-	        hasSideEffects: checkMask(propConfig, Injection.HAS_SIDE_EFFECTS),
 	        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
 	        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
 	        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
 	        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
 	      };
-
-	      !(!propertyInfo.mustUseAttribute || !propertyInfo.mustUseProperty) ?  false ? invariant(false, 'DOMProperty: Cannot require using both attribute and property: %s', propName) : invariant(false) : undefined;
-	      !(propertyInfo.mustUseProperty || !propertyInfo.hasSideEffects) ?  false ? invariant(false, 'DOMProperty: Properties that have side effects must use property: %s', propName) : invariant(false) : undefined;
-	      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ?  false ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or ' + 'numeric value, but not a combination: %s', propName) : invariant(false) : undefined;
+	      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ?  false ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
 
 	      if (false) {
 	        DOMProperty.getPossibleStandardName[lowerCased] = propName;
@@ -1243,7 +1361,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	};
-	var defaultValueCache = {};
+
+	/* eslint-disable max-len */
+	var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
+	/* eslint-enable max-len */
 
 	/**
 	 * DOMProperty exports lookup objects that can be used like functions:
@@ -1261,6 +1382,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var DOMProperty = {
 
 	  ID_ATTRIBUTE_NAME: 'data-reactid',
+	  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
+
+	  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
+	  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
 
 	  /**
 	   * Map from property "standard name" to an object with info about how to set
@@ -1275,16 +1400,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * mutationMethod:
 	   *   If non-null, used instead of the property or `setAttribute()` after
 	   *   initial render.
-	   * mustUseAttribute:
-	   *   Whether the property must be accessed and mutated using `*Attribute()`.
-	   *   (This includes anything that fails `<propName> in <element>`.)
 	   * mustUseProperty:
 	   *   Whether the property must be accessed and mutated as an object property.
-	   * hasSideEffects:
-	   *   Whether or not setting a value causes side effects such as triggering
-	   *   resources to be loaded or text selection changes. If true, we read from
-	   *   the DOM before updating to ensure that the value is only set if it has
-	   *   changed.
 	   * hasBooleanValue:
 	   *   Whether the property should be removed when set to a falsey value.
 	   * hasNumericValue:
@@ -1303,9 +1420,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Mapping from lowercase property names to the properly cased version, used
 	   * to warn in the case of missing properties. Available only in __DEV__.
+	   *
+	   * autofocus is predefined, because adding it to the property whitelist
+	   * causes unintended side effects.
+	   *
 	   * @type {Object}
 	   */
-	  getPossibleStandardName:  false ? {} : null,
+	  getPossibleStandardName:  false ? { autofocus: 'autoFocus' } : null,
 
 	  /**
 	   * All of the isCustomAttribute() functions that have been injected.
@@ -1326,27 +1447,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return false;
 	  },
 
-	  /**
-	   * Returns the default property value for a DOM property (i.e., not an
-	   * attribute). Most default values are '' or false, but not all. Worse yet,
-	   * some (in particular, `type`) vary depending on the type of element.
-	   *
-	   * TODO: Is it better to grab all the possible properties when creating an
-	   * element to avoid having to create the same element twice?
-	   */
-	  getDefaultValueForProperty: function (nodeName, prop) {
-	    var nodeDefaults = defaultValueCache[nodeName];
-	    var testElement;
-	    if (!nodeDefaults) {
-	      defaultValueCache[nodeName] = nodeDefaults = {};
-	    }
-	    if (!(prop in nodeDefaults)) {
-	      testElement = document.createElement(nodeName);
-	      nodeDefaults[prop] = testElement[prop];
-	    }
-	    return nodeDefaults[prop];
-	  },
-
 	  injection: DOMPropertyInjection
 	};
 
@@ -1354,17 +1454,57 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule invariant
+	 * 
+	 */
+	'use strict';
+
+	/**
+	 * WARNING: DO NOT manually require this module.
+	 * This is a replacement for `invariant(...)` used by the error code system
+	 * and will _only_ be required by the corresponding babel pass.
+	 * It always throws.
+	 */
+
+	function reactProdInvariant(code) {
+	  var argCount = arguments.length - 1;
+
+	  var message = 'Minified React error #' + code + '; visit ' + 'http://facebook.github.io/react/docs/error-decoder.html?invariant=' + code;
+
+	  for (var argIdx = 0; argIdx < argCount; argIdx++) {
+	    message += '&args[]=' + encodeURIComponent(arguments[argIdx + 1]);
+	  }
+
+	  message += ' for the full message or use the non-minified dev environment' + ' for full errors and additional helpful warnings.';
+
+	  var error = new Error(message);
+	  error.name = 'Invariant Violation';
+	  error.framesToPop = 1; // we don't care about reactProdInvariant's own frame
+
+	  throw error;
+	}
+
+	module.exports = reactProdInvariant;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
 	 */
 
 	'use strict';
@@ -1380,12 +1520,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * will remain to ensure logic does not differ in production.
 	 */
 
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  if (false) {
+	var validateFormat = function validateFormat(format) {};
+
+	if (false) {
+	  validateFormat = function validateFormat(format) {
 	    if (format === undefined) {
 	      throw new Error('invariant requires an error message argument');
 	    }
-	  }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
 
 	  if (!condition) {
 	    var error;
@@ -1408,45 +1554,310 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = invariant;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule ExecutionEnvironment
 	 */
 
 	'use strict';
 
-	var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-
-	/**
-	 * Simple, lightweight module assisting with the detection and context of
-	 * Worker. Helps avoid circular dependencies and allows code to reason about
-	 * whether or not they are in a Worker, even if they never include the main
-	 * `ReactWorker` dependency.
-	 */
-	var ExecutionEnvironment = {
-
-	  canUseDOM: canUseDOM,
-
-	  canUseWorkers: typeof Worker !== 'undefined',
-
-	  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-
-	  canUseViewport: canUseDOM && !!window.screen,
-
-	  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-
+	var NS = {
+	  xlink: 'http://www.w3.org/1999/xlink',
+	  xml: 'http://www.w3.org/XML/1998/namespace'
 	};
 
-	module.exports = ExecutionEnvironment;
+	// We use attributes for everything SVG so let's avoid some duplication and run
+	// code instead.
+	// The following are all specified in the HTML config already so we exclude here.
+	// - class (as className)
+	// - color
+	// - height
+	// - id
+	// - lang
+	// - max
+	// - media
+	// - method
+	// - min
+	// - name
+	// - style
+	// - target
+	// - type
+	// - width
+	var ATTRS = {
+	  accentHeight: 'accent-height',
+	  accumulate: 0,
+	  additive: 0,
+	  alignmentBaseline: 'alignment-baseline',
+	  allowReorder: 'allowReorder',
+	  alphabetic: 0,
+	  amplitude: 0,
+	  arabicForm: 'arabic-form',
+	  ascent: 0,
+	  attributeName: 'attributeName',
+	  attributeType: 'attributeType',
+	  autoReverse: 'autoReverse',
+	  azimuth: 0,
+	  baseFrequency: 'baseFrequency',
+	  baseProfile: 'baseProfile',
+	  baselineShift: 'baseline-shift',
+	  bbox: 0,
+	  begin: 0,
+	  bias: 0,
+	  by: 0,
+	  calcMode: 'calcMode',
+	  capHeight: 'cap-height',
+	  clip: 0,
+	  clipPath: 'clip-path',
+	  clipRule: 'clip-rule',
+	  clipPathUnits: 'clipPathUnits',
+	  colorInterpolation: 'color-interpolation',
+	  colorInterpolationFilters: 'color-interpolation-filters',
+	  colorProfile: 'color-profile',
+	  colorRendering: 'color-rendering',
+	  contentScriptType: 'contentScriptType',
+	  contentStyleType: 'contentStyleType',
+	  cursor: 0,
+	  cx: 0,
+	  cy: 0,
+	  d: 0,
+	  decelerate: 0,
+	  descent: 0,
+	  diffuseConstant: 'diffuseConstant',
+	  direction: 0,
+	  display: 0,
+	  divisor: 0,
+	  dominantBaseline: 'dominant-baseline',
+	  dur: 0,
+	  dx: 0,
+	  dy: 0,
+	  edgeMode: 'edgeMode',
+	  elevation: 0,
+	  enableBackground: 'enable-background',
+	  end: 0,
+	  exponent: 0,
+	  externalResourcesRequired: 'externalResourcesRequired',
+	  fill: 0,
+	  fillOpacity: 'fill-opacity',
+	  fillRule: 'fill-rule',
+	  filter: 0,
+	  filterRes: 'filterRes',
+	  filterUnits: 'filterUnits',
+	  floodColor: 'flood-color',
+	  floodOpacity: 'flood-opacity',
+	  focusable: 0,
+	  fontFamily: 'font-family',
+	  fontSize: 'font-size',
+	  fontSizeAdjust: 'font-size-adjust',
+	  fontStretch: 'font-stretch',
+	  fontStyle: 'font-style',
+	  fontVariant: 'font-variant',
+	  fontWeight: 'font-weight',
+	  format: 0,
+	  from: 0,
+	  fx: 0,
+	  fy: 0,
+	  g1: 0,
+	  g2: 0,
+	  glyphName: 'glyph-name',
+	  glyphOrientationHorizontal: 'glyph-orientation-horizontal',
+	  glyphOrientationVertical: 'glyph-orientation-vertical',
+	  glyphRef: 'glyphRef',
+	  gradientTransform: 'gradientTransform',
+	  gradientUnits: 'gradientUnits',
+	  hanging: 0,
+	  horizAdvX: 'horiz-adv-x',
+	  horizOriginX: 'horiz-origin-x',
+	  ideographic: 0,
+	  imageRendering: 'image-rendering',
+	  'in': 0,
+	  in2: 0,
+	  intercept: 0,
+	  k: 0,
+	  k1: 0,
+	  k2: 0,
+	  k3: 0,
+	  k4: 0,
+	  kernelMatrix: 'kernelMatrix',
+	  kernelUnitLength: 'kernelUnitLength',
+	  kerning: 0,
+	  keyPoints: 'keyPoints',
+	  keySplines: 'keySplines',
+	  keyTimes: 'keyTimes',
+	  lengthAdjust: 'lengthAdjust',
+	  letterSpacing: 'letter-spacing',
+	  lightingColor: 'lighting-color',
+	  limitingConeAngle: 'limitingConeAngle',
+	  local: 0,
+	  markerEnd: 'marker-end',
+	  markerMid: 'marker-mid',
+	  markerStart: 'marker-start',
+	  markerHeight: 'markerHeight',
+	  markerUnits: 'markerUnits',
+	  markerWidth: 'markerWidth',
+	  mask: 0,
+	  maskContentUnits: 'maskContentUnits',
+	  maskUnits: 'maskUnits',
+	  mathematical: 0,
+	  mode: 0,
+	  numOctaves: 'numOctaves',
+	  offset: 0,
+	  opacity: 0,
+	  operator: 0,
+	  order: 0,
+	  orient: 0,
+	  orientation: 0,
+	  origin: 0,
+	  overflow: 0,
+	  overlinePosition: 'overline-position',
+	  overlineThickness: 'overline-thickness',
+	  paintOrder: 'paint-order',
+	  panose1: 'panose-1',
+	  pathLength: 'pathLength',
+	  patternContentUnits: 'patternContentUnits',
+	  patternTransform: 'patternTransform',
+	  patternUnits: 'patternUnits',
+	  pointerEvents: 'pointer-events',
+	  points: 0,
+	  pointsAtX: 'pointsAtX',
+	  pointsAtY: 'pointsAtY',
+	  pointsAtZ: 'pointsAtZ',
+	  preserveAlpha: 'preserveAlpha',
+	  preserveAspectRatio: 'preserveAspectRatio',
+	  primitiveUnits: 'primitiveUnits',
+	  r: 0,
+	  radius: 0,
+	  refX: 'refX',
+	  refY: 'refY',
+	  renderingIntent: 'rendering-intent',
+	  repeatCount: 'repeatCount',
+	  repeatDur: 'repeatDur',
+	  requiredExtensions: 'requiredExtensions',
+	  requiredFeatures: 'requiredFeatures',
+	  restart: 0,
+	  result: 0,
+	  rotate: 0,
+	  rx: 0,
+	  ry: 0,
+	  scale: 0,
+	  seed: 0,
+	  shapeRendering: 'shape-rendering',
+	  slope: 0,
+	  spacing: 0,
+	  specularConstant: 'specularConstant',
+	  specularExponent: 'specularExponent',
+	  speed: 0,
+	  spreadMethod: 'spreadMethod',
+	  startOffset: 'startOffset',
+	  stdDeviation: 'stdDeviation',
+	  stemh: 0,
+	  stemv: 0,
+	  stitchTiles: 'stitchTiles',
+	  stopColor: 'stop-color',
+	  stopOpacity: 'stop-opacity',
+	  strikethroughPosition: 'strikethrough-position',
+	  strikethroughThickness: 'strikethrough-thickness',
+	  string: 0,
+	  stroke: 0,
+	  strokeDasharray: 'stroke-dasharray',
+	  strokeDashoffset: 'stroke-dashoffset',
+	  strokeLinecap: 'stroke-linecap',
+	  strokeLinejoin: 'stroke-linejoin',
+	  strokeMiterlimit: 'stroke-miterlimit',
+	  strokeOpacity: 'stroke-opacity',
+	  strokeWidth: 'stroke-width',
+	  surfaceScale: 'surfaceScale',
+	  systemLanguage: 'systemLanguage',
+	  tableValues: 'tableValues',
+	  targetX: 'targetX',
+	  targetY: 'targetY',
+	  textAnchor: 'text-anchor',
+	  textDecoration: 'text-decoration',
+	  textRendering: 'text-rendering',
+	  textLength: 'textLength',
+	  to: 0,
+	  transform: 0,
+	  u1: 0,
+	  u2: 0,
+	  underlinePosition: 'underline-position',
+	  underlineThickness: 'underline-thickness',
+	  unicode: 0,
+	  unicodeBidi: 'unicode-bidi',
+	  unicodeRange: 'unicode-range',
+	  unitsPerEm: 'units-per-em',
+	  vAlphabetic: 'v-alphabetic',
+	  vHanging: 'v-hanging',
+	  vIdeographic: 'v-ideographic',
+	  vMathematical: 'v-mathematical',
+	  values: 0,
+	  vectorEffect: 'vector-effect',
+	  version: 0,
+	  vertAdvY: 'vert-adv-y',
+	  vertOriginX: 'vert-origin-x',
+	  vertOriginY: 'vert-origin-y',
+	  viewBox: 'viewBox',
+	  viewTarget: 'viewTarget',
+	  visibility: 0,
+	  widths: 0,
+	  wordSpacing: 'word-spacing',
+	  writingMode: 'writing-mode',
+	  x: 0,
+	  xHeight: 'x-height',
+	  x1: 0,
+	  x2: 0,
+	  xChannelSelector: 'xChannelSelector',
+	  xlinkActuate: 'xlink:actuate',
+	  xlinkArcrole: 'xlink:arcrole',
+	  xlinkHref: 'xlink:href',
+	  xlinkRole: 'xlink:role',
+	  xlinkShow: 'xlink:show',
+	  xlinkTitle: 'xlink:title',
+	  xlinkType: 'xlink:type',
+	  xmlBase: 'xml:base',
+	  xmlns: 0,
+	  xmlnsXlink: 'xmlns:xlink',
+	  xmlLang: 'xml:lang',
+	  xmlSpace: 'xml:space',
+	  y: 0,
+	  y1: 0,
+	  y2: 0,
+	  yChannelSelector: 'yChannelSelector',
+	  z: 0,
+	  zoomAndPan: 'zoomAndPan'
+	};
+
+	var SVGDOMPropertyConfig = {
+	  Properties: {},
+	  DOMAttributeNamespaces: {
+	    xlinkActuate: NS.xlink,
+	    xlinkArcrole: NS.xlink,
+	    xlinkHref: NS.xlink,
+	    xlinkRole: NS.xlink,
+	    xlinkShow: NS.xlink,
+	    xlinkTitle: NS.xlink,
+	    xlinkType: NS.xlink,
+	    xmlBase: NS.xml,
+	    xmlLang: NS.xml,
+	    xmlSpace: NS.xml
+	  },
+	  DOMAttributeNames: {}
+	};
+
+	Object.keys(ATTRS).forEach(function (key) {
+	  SVGDOMPropertyConfig.Properties[key] = 0;
+	  if (ATTRS[key]) {
+	    SVGDOMPropertyConfig.DOMAttributeNames[key] = ATTRS[key];
+	  }
+	});
+
+	module.exports = SVGDOMPropertyConfig;
 
 /***/ }
 /******/ ])

@@ -142,19 +142,19 @@ describe('htmltojsx', function() {
       expect(converter.convert('<div style="-moz-hyphens: auto; -webkit-hyphens: auto">Test</div>').trim())
         .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert uppercase vendor-prefix "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="-MOZ-HYPHENS: auto; -WEBKIT-HYPHENS: auto">Test</div>').trim())
         .toBe('<div style={{MozHyphens: \'auto\', WebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert "style" attributes with vendor prefix-like strings in the middle and mixed case', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="myclass-MOZ-HYPHENS: auto; myclass-WEBKIT-HYPHENS: auto">Test</div>').trim())
         .toBe('<div style={{myclassMozHyphens: \'auto\', myclassWebkitHyphens: \'auto\'}}>Test</div>');
     });
-    
+
     it('should convert -ms- prefix "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="-ms-hyphens: auto">Test</div>').trim())
@@ -170,7 +170,7 @@ describe('htmltojsx', function() {
     it('should convert uppercase "style" attributes', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<div style="TEXT-ALIGN: center">Test</div>').trim())
-        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');  
+        .toBe('<div style={{textAlign: \'center\'}}>Test</div>');
     });
 
     it('should convert "class" attribute', function() {
@@ -232,6 +232,12 @@ describe('htmltojsx', function() {
         expect(converter.convert('<input type="checkbox" checked>').trim())
           .toBe('<input type="checkbox" defaultChecked />');
     });
+
+    it('should convert SVG attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert('<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" fill-rule="evenodd"/></svg>').trim())
+          .toBe('<svg height={100} width={100}><circle cx={50} cy={50} r={40} stroke="black" strokeWidth={3} fill="red" fillRule="evenodd" /></svg>');
+    });
   });
 
   describe('special tags', function() {
@@ -260,6 +266,12 @@ describe('htmltojsx', function() {
       var converter = new HTMLtoJSX({ createClass: false });
       expect(converter.convert('<style>\nh1 {\n    background: url(\'http://foo.bar/img.jpg\';\n}\n</style>').trim())
         .toBe('<style dangerouslySetInnerHTML={{__html: "\\nh1 {\\n    background: url(\'http://foo.bar/img.jpg\';\\n}\\n" }} />');
+    });
+
+    it('should convert svg tag names', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+      expect(converter.convert('<svg><clipPath><feSpotLight><linearGradient></linearGradient></feSpotLight></clipPath></svg>').trim())
+        .toBe('<svg><clipPath><feSpotLight><linearGradient /></feSpotLight></clipPath></svg>');
     });
   });
 });

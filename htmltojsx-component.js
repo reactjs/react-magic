@@ -68,7 +68,7 @@
           React.createElement(
             "label",
             { style: { display: this.state.createClass ? '' : 'none' } },
-            "· Class name:",
+            "\xB7 Class name:",
             React.createElement("input", {
               type: "text",
               value: this.state.outputClassName,
