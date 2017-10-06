@@ -2,7 +2,7 @@ React-Magic and HTMLtoJSX
 =========================
 
 React-Magic is an experimental library that uses the power of Facebook's
-[React](http://facebook.github.io/react/) library to inject AJAX-loading
+[React](https://laurajuliette.github.io/HTMLtoJSXOnline/) library to inject AJAX-loading
 goodness into plain old HTML webpages, without having to write any custom
 JavaScript. You can even use CSS transitions between the pages. Simply add a
 single script tag (or click a bookmarklet) and "it just works".
