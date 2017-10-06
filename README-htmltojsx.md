@@ -10,7 +10,7 @@ Installation
 npm install htmltojsx
 ```
 
-Alternatively, a web-based version is available at http://facebook.github.io/react/html-jsx.html
+Alternatively, a web-based version is available at http://magic.reactjs.net/htmltojsx.htm
 
 Usage
 =====
