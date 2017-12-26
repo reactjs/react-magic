@@ -10,7 +10,7 @@ Installation
 npm install htmltojsx
 ```
 
-Alternatively, a web-based version is available at http://facebook.github.io/react/html-jsx.html
+Alternatively, a web-based version is available at http://magic.reactjs.net/htmltojsx.htm
 
 Usage
 =====
@@ -43,11 +43,20 @@ var output = converter.convert('<div>Hello world!</div>');
 
 Changelog
 =========
+0.3.0 - 4th September 2017
+--------------------------
+ - [#97](https://github.com/reactjs/react-magic/pull/97) - Update to React 15
+ - [#100](https://github.com/reactjs/react-magic/pull/100) - Remove JSX class-level indention when transforming HTML into JSX
+ - [#136](https://github.com/reactjs/react-magic/pull/136) and [#138](https://github.com/reactjs/react-magic/pull/138) - Handle SVG attributes
+0.2.6 - 28th November 2016
+--------------------------
+ - [#55](https://github.com/reactjs/react-magic/pull/55) - Handle braces in text. *Thanks to [Solar Olugebefola](https://github.com/solugebefola)*
+ - [#49](https://github.com/reactjs/react-magic/pull/49) - Fix quotation mark replacement. *Thanks to [Geoffrey Challen](https://github.com/gchallen)*
+
 0.2.5 - 26th October 2015
 -------------------------
  - [#33](https://github.com/reactjs/react-magic/issues/33) - Correctly handle `<textarea>`s and `<pre>`s
  - [#35](https://github.com/reactjs/react-magic/issues/35) - Handle internal stylesheets (`<style>` tags). *Thanks to [Trevor Copeland](https://github.com/sickslives)*
-
 
 0.2.4 - 6th August 2015
 -----------------------

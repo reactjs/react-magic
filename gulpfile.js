@@ -8,6 +8,7 @@
  *
  */
 
+var babel = require('gulp-babel');
 var del = require('del');
 var githubPages = require('gulp-gh-pages');
 var gulp = require('gulp');
@@ -24,7 +25,8 @@ var PACKAGE_OUTPUT_DIR = 'build/package/';
 
 gulp.task('default', ['build']);
 gulp.task('build', [
-  'build-htmltojsx', 'build-magic', 'build-site-misc', 'build-package'
+  'build-htmltojsx', 'build-magic', 'build-site-htmltojsx', 'build-site-misc',
+  'build-package'
 ]);
 
 gulp.task('build-htmltojsx', function() {
@@ -71,6 +73,12 @@ gulp.task('build-magic', function() {
     .pipe(livereload({ auto: false }));
 });
 
+gulp.task('build-site-htmltojsx', function() {
+  return gulp.src('src/htmltojsx-component.js')
+    .pipe(babel())
+    .pipe(gulp.dest(SITE_OUTPUT_DIR));
+});
+
 gulp.task('build-site-misc', function() {
   return gulp.src(['site/*', 'test/*'])
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
@@ -112,5 +120,6 @@ gulp.task('clean', function(callback) {
 gulp.task('watch', function() {
   livereload.listen();
   gulp.watch(['site/*', 'test/*'], ['build-site-misc']);
-  gulp.watch('src/htmltojsx.js', ['build-htmltojsx']);
+  gulp.watch('src/htmltojsx.js', ['build-htmltojsx', 'build-site-htmltojsx']);
+  gulp.watch('src/htmltojsx-component.js', ['build-site-htmltojsx']);
 });
