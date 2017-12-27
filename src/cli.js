@@ -35,53 +35,45 @@ function getArgs() {
   return args.argv;
 }
 
-function main() {
-  var argv = getArgs();
-
+function buildConverterCb(createClass, outputClassName) {
   var converter = new HTMLtoJSX({
-    createClass: !!argv.className,
-    outputClassName: argv.className
+    createClass: createClass,
+    outputClassName: outputClassName
   });
 
-  if (process.stdin.isTTY){
-    fs.readFile(argv._[0], 'utf-8', function(err, input) {
-      if (err) {
-        console.error(err.stack);
-        process.exit(2);
-      }
-      tidy(input, function(err, html){
-        if (err) {
-          console.error(err.stack);
-          process.exit(2);
-        }
+  return function(err, input) {
+    if (err) {
+      console.error(err.stack);
+      process.exit(2);
+    }
 
-        var output = converter.convert(html);
-        console.log(output);
-        process.exit();
-      });
-    });
+    var output = converter.convert(input);
+    console.log(output);
+    process.exit();
   }
-  else{
-    var data = '';
-    process.stdin.resume()
-    process.stdin.setEncoding('utf8')
-    process.stdin.on('data', function(chunk){
-      data += chunk;
-    });
+}
 
-    process.stdin.on('end', function(){
-      tidy(data, function(err, html){
-        if (err) {
-          console.error(err.stack);
-          process.exit(2);
-        }
+function readFromPipe(cb) {
+  var data = '';
+  process.stdin.resume()
+  process.stdin.setEncoding('utf8')
+  process.stdin.on('data', function(chunk) {
+    data += chunk;
+  });
+  process.stdin.on('end', function() {
+    return cb(null, data);
+  });
+}
 
-        var output = converter.convert(html);
-        console.log(output);
-        process.exit();
-      })
-    });
+
+function main() {
+  var argv = getArgs();
+  var convertInputCb = buildConverterCb(!!argv.className, argv.className);
+
+  if (process.stdin.isTTY) {
+    return fs.readFile(argv._[0], 'utf-8', convertInputCb);
   }
+  return readFromPipe(convertInputCb);
 }
 
 main();
