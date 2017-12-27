@@ -3,8 +3,6 @@
 
 var fs = require('fs');
 var HTMLtoJSX = require('./htmltojsx.js');
-
-var tidy = require('htmltidy').tidy;
 var yargs = require('yargs');
 
 function getArgs() {
@@ -20,10 +18,15 @@ function getArgs() {
       '$0 -c AwesomeComponent awesome.htm',
       'Creates React component "AwesomeComponent" based on awesome.htm'
     )
+    .example(
+      'cat file.htm | $0 -c AwesomeComponent',
+      'Creates React component "AwesomeComponent" based on data piped in'
+    )
     .strict();
 
   var files = args.argv._;
-  // if input coming from
+
+  // print error if called directly (not piped) and no files are specified
   if (process.stdin.isTTY && (!files || files.length === 0)) {
       console.error('Please provide a file name');
       args.showHelp();
