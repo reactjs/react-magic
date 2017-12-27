@@ -5,7 +5,6 @@
   "main": "src/htmltojsx.js",
   "bin": "src/cli.js",
   "dependencies": {
-    "htmltidy": "0.0.6",
     "react": "~15.4.1",
     "react-dom": "~15.4.1",
     "yargs": "~4.6.0",
