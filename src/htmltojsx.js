@@ -610,9 +610,14 @@ HTMLtoJSX.prototype = {
    * @return {string}
    */
   _getElementAttribute: function(node, attribute) {
+    var value = attribute.value;
+    // If there's some newlines in the value, compact it
+    if ( value.indexOf('\n') > -1 ) {
+      value = value.replace(/^\s+/mg, ' ').replace(/\n/g, '');
+    }
     switch (attribute.name) {
       case 'style':
-        return this._getStyleAttribute(attribute.value);
+        return this._getStyleAttribute(value);
       default:
         var tagName = jsxTagName(node.tagName);
         var name =
@@ -623,10 +628,10 @@ HTMLtoJSX.prototype = {
         var result = name;
 
         // Numeric values should be output as {123} not "123"
-        if (isNumeric(attribute.value)) {
-          result += '={' + attribute.value + '}';
-        } else if (attribute.value.length > 0) {
-          result += '="' + attribute.value.replace(/"/gm, '&quot;') + '"';
+        if (isNumeric(value)) {
+          result += '={' + value + '}';
+        } else if (value.length > 0) {
+          result += '="' + value.replace(/"/gm, '&quot;') + '"';
         }
         return result;
     }
