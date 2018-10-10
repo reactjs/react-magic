@@ -135,6 +135,7 @@ var ELEMENT_TAG_NAME_MAPPING = {
 
 var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
 var SVGDOMPropertyConfig = require('react-dom/lib/SVGDOMPropertyConfig');
+var cssToObject = require('css-to-object');
 
 /**
  * Iterates over elements of object invokes iteratee for each element
@@ -639,8 +640,8 @@ HTMLtoJSX.prototype = {
    * @return {string}
    */
   _getStyleAttribute: function(styles) {
-    var jsxStyles = new StyleParser(styles).toJSXString();
-    return 'style={{' + jsxStyles + '}}';
+    var jsxStyles = cssToObject(styles);
+    return `style={${JSON.stringify(jsxStyles)}}`;
   },
 
   /**
@@ -654,83 +655,6 @@ HTMLtoJSX.prototype = {
   _removeJSXClassIndention: function(output, indent) {
     var classIndention = new RegExp('\\n' + indent + indent + indent,  'g');
     return output.replace(classIndention, '\n');
-  }
-};
-
-/**
- * Handles parsing of inline styles
- *
- * @param {string} rawStyle Raw style attribute
- * @constructor
- */
-var StyleParser = function(rawStyle) {
-  this.parse(rawStyle);
-};
-StyleParser.prototype = {
-  /**
-   * Parse the specified inline style attribute value
-   * @param {string} rawStyle Raw style attribute
-   */
-  parse: function(rawStyle) {
-    this.styles = {};
-    rawStyle.split(';').forEach(function(style) {
-      style = style.trim();
-      var firstColon = style.indexOf(':');
-      var key = style.substr(0, firstColon);
-      var value = style.substr(firstColon + 1).trim();
-      if (key !== '') {
-        // Style key should be case insensitive
-        key = key.toLowerCase();
-        this.styles[key] = value;
-      }
-    }, this);
-  },
-
-  /**
-   * Convert the style information represented by this parser into a JSX
-   * string
-   *
-   * @return {string}
-   */
-  toJSXString: function() {
-    var output = [];
-    eachObj(this.styles, function(key, value) {
-      output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(value));
-    }, this);
-    return output.join(', ');
-  },
-
-  /**
-   * Convert the CSS style key to a JSX style key
-   *
-   * @param {string} key CSS style key
-   * @return {string} JSX style key
-   */
-  toJSXKey: function(key) {
-    // Don't capitalize -ms- prefix
-    if(/^-ms-/.test(key)) {
-      key = key.substr(1);
-    }
-    return hyphenToCamelCase(key);
-  },
-
-  /**
-   * Convert the CSS style value to a JSX style value
-   *
-   * @param {string} value CSS style value
-   * @return {string} JSX style value
-   */
-  toJSXValue: function(value) {
-    if (isNumeric(value)) {
-      // If numeric, no quotes
-      return value;
-    } else if (isConvertiblePixelValue(value)) {
-      // "500px" -> 500
-      return trimEnd(value, 'px');
-    } else {
-      // Probably a string, wrap it in quotes
-      return '\'' + value.replace(/'/g, '"') + '\'';
-    }
   }
 };
 
