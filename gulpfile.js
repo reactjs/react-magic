@@ -19,6 +19,7 @@ var rename = require('gulp-rename');
 var spawn = require('child_process').spawn;
 var webpack = require('webpack');
 var uglify = require('gulp-uglify');
+var babel = require('gulp-babel');
 
 var SITE_OUTPUT_DIR = 'build/site/';
 var PACKAGE_OUTPUT_DIR = 'build/package/';
@@ -43,6 +44,12 @@ gulp.task('build-htmltojsx', function() {
           'process.env.NODE_ENV': '"production"'
         }),
       ],
+      node: {
+        fs: "empty"
+      }
+    }))
+    .pipe(babel({
+      presets: ['es2015']
     }))
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
@@ -65,6 +72,12 @@ gulp.task('build-magic', function() {
           'process.env.NODE_ENV': '"production"'
         }),
       ],
+      node: {
+        fs: "empty"
+      }
+    }))
+    .pipe(babel({
+      presets: ['es2015']
     }))
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
