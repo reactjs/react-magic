@@ -19,7 +19,6 @@ var rename = require('gulp-rename');
 var spawn = require('child_process').spawn;
 var webpack = require('webpack');
 var uglify = require('gulp-uglify');
-var babel = require('gulp-babel');
 
 var SITE_OUTPUT_DIR = 'build/site/';
 var PACKAGE_OUTPUT_DIR = 'build/package/';
@@ -48,9 +47,7 @@ gulp.task('build-htmltojsx', function() {
         fs: "empty"
       }
     }))
-    .pipe(babel({
-      presets: ['es2015']
-    }))
+    .pipe(babel())
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
@@ -76,9 +73,7 @@ gulp.task('build-magic', function() {
         fs: "empty"
       }
     }))
-    .pipe(babel({
-      presets: ['es2015']
-    }))
+    .pipe(babel())
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
