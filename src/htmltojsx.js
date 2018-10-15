@@ -135,7 +135,7 @@ var ELEMENT_TAG_NAME_MAPPING = {
 
 var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
 var SVGDOMPropertyConfig = require('react-dom/lib/SVGDOMPropertyConfig');
-var cssToObject = require('to-style').object;
+var cssToObject = require('css-to-object');
 
 /**
  * Iterates over elements of object invokes iteratee for each element
@@ -640,7 +640,7 @@ HTMLtoJSX.prototype = {
    * @return {string}
    */
   _getStyleAttribute: function(styles) {
-    var jsxStyles = cssToObject(styles, { camelize: true });
+    var jsxStyles = cssToObject(styles);
     return `style={${JSON.stringify(jsxStyles)}}`;
   },
 
