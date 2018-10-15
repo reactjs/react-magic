@@ -43,7 +43,11 @@ gulp.task('build-htmltojsx', function() {
           'process.env.NODE_ENV': '"production"'
         }),
       ],
+      node: {
+        fs: "empty"
+      }
     }))
+    .pipe(babel())
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
@@ -65,7 +69,11 @@ gulp.task('build-magic', function() {
           'process.env.NODE_ENV': '"production"'
         }),
       ],
+      node: {
+        fs: "empty"
+      }
     }))
+    .pipe(babel())
     .pipe(gulp.dest(SITE_OUTPUT_DIR))
     .pipe(uglify({ preserveComments: 'some' }))
     .pipe(rename({ extname: '.min.js' }))
