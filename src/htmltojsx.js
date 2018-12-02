@@ -724,9 +724,6 @@ StyleParser.prototype = {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
-    } else if (isConvertiblePixelValue(value)) {
-      // "500px" -> 500
-      return trimEnd(value, 'px');
     } else {
       // Probably a string, wrap it in quotes
       return '\'' + value.replace(/'/g, '"') + '\'';
