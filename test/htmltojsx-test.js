@@ -238,6 +238,17 @@ describe('htmltojsx', function() {
         expect(converter.convert('<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" fill-rule="evenodd"/></svg>').trim())
           .toBe('<svg height={100} width={100}><circle cx={50} cy={50} r={40} stroke="black" strokeWidth={3} fill="red" fillRule="evenodd" /></svg>');
     });
+
+    it('should compact multilignes attributes', function() {
+      var converter = new HTMLtoJSX({ createClass: false });
+        expect(converter.convert([
+        '<div class="cc1',
+        '            cc2',
+        '            cc3',
+        '            cc4">multilignes classes</div>'
+        ].join('\n')).trim())
+          .toBe('<div className="cc1 cc2 cc3 cc4">multilignes classes</div>');
+    });
   });
 
   describe('special tags', function() {
