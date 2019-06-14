@@ -38,7 +38,6 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
 // Reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Element#SVG_elements
 var ELEMENT_TAG_NAME_MAPPING = {
   a: 'a',
-  alt: 'alt',
   altglyph: 'altGlyph',
   altglyphdef: 'altGlyphDef',
   altglyphitem: 'altGlyphItem',
@@ -628,6 +627,8 @@ HTMLtoJSX.prototype = {
           result += '={' + attribute.value + '}';
         } else if (attribute.value.length > 0) {
           result += '="' + attribute.value.replace(/"/gm, '&quot;') + '"';
+        } else if(attribute.value.length === 0 && attribute.name === 'alt') {
+          result += '=""';
         }
         return result;
     }
