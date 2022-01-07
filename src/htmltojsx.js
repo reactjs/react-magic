@@ -31,7 +31,8 @@ var ATTRIBUTE_MAPPING = {
 var ELEMENT_ATTRIBUTE_MAPPING = {
   'input': {
     'checked': 'defaultChecked',
-    'value': 'defaultValue'
+    'value': 'defaultValue',
+    'autofocus': 'autoFocus'
   }
 };
 
