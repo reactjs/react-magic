@@ -620,7 +620,7 @@ HTMLtoJSX.prototype = {
           (ELEMENT_ATTRIBUTE_MAPPING[tagName] &&
             ELEMENT_ATTRIBUTE_MAPPING[tagName][attribute.name]) ||
           ATTRIBUTE_MAPPING[attribute.name] ||
-          attribute.name;
+          ("data-" + attribute.name.replace(/^data-/,""));
         var result = name;
 
         // Numeric values should be output as {123} not "123"
