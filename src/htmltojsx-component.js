@@ -45,10 +45,10 @@ var HELLO_COMPONENT = "\
       });
       return converter.convert(input);
     },
-  	render: function() {
+    render: function() {
       return (
         <div>
-          <div id="options">
+          <p id="options">
             <label>
               <input
                 type="checkbox"
@@ -57,14 +57,14 @@ var HELLO_COMPONENT = "\
                 Create class
             </label>
             <label style={{display: this.state.createClass ? '' : 'none'}}>
-              ·
+              &nbsp;·
               Class name:
               <input
                 type="text"
                 value={this.state.outputClassName}
                 onChange={this.onReactClassNameChange} />
             </label>
-          </div>
+          </p>
           <ReactPlayground
             codeText={HELLO_COMPONENT}
             renderCode={true}
